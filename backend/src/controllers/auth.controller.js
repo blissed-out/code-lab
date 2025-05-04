@@ -1,3 +1,5 @@
+import { prisma } from "../libs/db";
+
 export const register = async (req, res) => {
   const { name, email, password } = req.body;
 
