@@ -4,4 +4,4 @@ const globalForPrisma = globalThis;
 
 export const db = globalForPrisma || new PrismaClient();
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (process.env.NODE_ENV !== "production") globalForPrisma.db = db;
