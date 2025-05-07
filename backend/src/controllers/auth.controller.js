@@ -72,6 +72,7 @@ const login = asyncHandler(async (req, res) => {
 
   const token = jwt.sign(newUser.id, process.env.JWT_SECRET_KEY, {
     algorithm: "RS256",
+    expiresIn: process.env.JWT_EXPIRY
   });
 
   res.cookie("token", token);

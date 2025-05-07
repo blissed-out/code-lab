@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-const registrationValidation = async (req, res) => {
+const registrationValidation = () => {
   return [
     body("email")
       .trim()
