@@ -5,7 +5,7 @@ import validate from "../middlewares/validation.middleware.js";
 
 const authRoute = Router();
 
-authRoute.get("/register", registrationValidation, validate, register);
-authRoute.get("/login", loginValidation, validate, login);
+authRoute.post("/register", registrationValidation(), validate, register);
+authRoute.post("/login", loginValidation(), validate, login);
 
 export default authRoute;
