@@ -1,5 +1,5 @@
 import { db } from "../libs/db.js";
-import asyncHandler from "../utils/asyncHanlder.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import { Role } from "../generated/prisma/index.js";
 import ApiResponse from "../utils/api-response.js";
