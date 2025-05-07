@@ -34,12 +34,6 @@ const register = asyncHandler(async (req, res) => {
     },
   });
 
-  const token = jwt.sign(newUser.id, process.env.JWT_SECRET_KEY, {
-    algorithm: "RS256",
-  });
-
-  res.cookie("token", token);
-
   const data = {
     name: newUser.name,
     email: newUser.email,
@@ -52,6 +46,38 @@ const register = asyncHandler(async (req, res) => {
 
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
+
+  const existingUser = db.user.findUnique({
+    where: {
+      email,
+    }
+  })
+
+  const data = {
+    name: existingUser.name,
+    email: existingUser.email,
+  }
+
+  if (!existingUser) {
+    return res.status(401).json(new ApiResponse(401, data, "User is not registered"))
+  }
+
+  const hashedPassword = existingUser.password;
+
+  const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+
+  if (!isPasswordCorrect) {
+    return res.status(401).json(new ApiResponse(401, data.email, "Incorrect credentials"));
+  }
+
+  const token = jwt.sign(newUser.id, process.env.JWT_SECRET_KEY, {
+    algorithm: "RS256",
+  });
+
+  res.cookie("token", token);
+
+  res.status(200).json(new ApiResponse(200, data, "Login successfully"));
+
 });
 
 const logout = (req, res) => { };
