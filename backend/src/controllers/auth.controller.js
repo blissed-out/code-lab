@@ -47,7 +47,7 @@ const register = asyncHandler(async (req, res) => {
 const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  const existingUser = db.user.findUnique({
+  const existingUser = await db.user.findUnique({
     where: {
       email,
     }
@@ -80,6 +80,10 @@ const login = asyncHandler(async (req, res) => {
 
 });
 
-const logout = (req, res) => { };
+const logout = (req, res) => {
+  res.cookie(token, "");
+  res.status(200).json(new ApiResponse(200, null, "logged out successfully"))
+};
+
 
 export { register, login, logout };
