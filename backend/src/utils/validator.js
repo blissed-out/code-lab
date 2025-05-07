@@ -9,7 +9,7 @@ const registrationValidation = () => {
       .isEmail()
       .withMessage("invalid email"),
 
-    body("username")
+    body("name")
       .trim()
       .notEmpty()
       .withMessage("username field is required")
