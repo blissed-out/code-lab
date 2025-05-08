@@ -83,7 +83,7 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logout = (req, res) => {
-  res.cookie(token, "");
+  res.cookie("token", "");
   res.status(200).json(new ApiResponse(200, null, "logged out successfully"))
 };
 
