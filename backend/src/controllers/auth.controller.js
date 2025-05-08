@@ -3,6 +3,7 @@ import asyncHandler from "../utils/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import { Role } from "../generated/prisma/index.js";
 import ApiResponse from "../utils/api-response.js";
+import jwt from "jsonwebtoken"
 
 const register = asyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
@@ -33,6 +34,7 @@ const register = asyncHandler(async (req, res) => {
       role: Role.USER,
     },
   });
+
 
   const data = {
     name: newUser.name,
@@ -70,10 +72,9 @@ const login = asyncHandler(async (req, res) => {
     return res.status(401).json(new ApiResponse(401, data.email, "Incorrect credentials"));
   }
 
-  const token = jwt.sign(newUser.id, process.env.JWT_SECRET_KEY, {
-    algorithm: "RS256",
-    expiresIn: process.env.JWT_EXPIRY
-  });
+  const token = jwt.sign(existingUser.id, process.env.JWT_SECRET_KEY, {
+    algorithm: "SHA-256",
+  }, { expiresIn: process.env.JWT_EXPIRY });
 
   res.cookie("token", token);
 
