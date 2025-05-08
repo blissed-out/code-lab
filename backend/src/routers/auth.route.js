@@ -7,6 +7,6 @@ const authRoute = Router();
 
 authRoute.post("/register", registrationValidation(), validate, register);
 authRoute.post("/login", loginValidation(), validate, login);
-authRoute.get("/logout", loginValidation(), validate, logout);
+authRoute.get("/logout", validate, logout);
 
 export default authRoute;
