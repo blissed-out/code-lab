@@ -1,6 +1,6 @@
 import { db } from "../libs/db.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import bcrypt, { hashSync } from "bcryptjs";
+import bcrypt from "bcryptjs";
 import { Role } from "../generated/prisma/index.js";
 import ApiResponse from "../utils/api-response.js";
 import jwt from "jsonwebtoken"
