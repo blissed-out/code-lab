@@ -71,7 +71,14 @@ const login = asyncHandler(async (req, res) => {
     algorithm: "HS256",
   }, { expiresIn: process.env.JWT_EXPIRY });
 
-  res.cookie("token", token);
+  const cookieOption = {
+    "maxAge": 7 * 24 * 60 * 60 * 1000,
+    "httpOnly": true,
+    "sameSite": "strict",
+    "secure": process.env.NODE_ENVIRONMENT !== "development",
+  }
+
+  res.cookie("token", token, cookieOption);
 
   const data = {
     name: existingUser.name,
@@ -83,7 +90,12 @@ const login = asyncHandler(async (req, res) => {
 });
 
 const logout = (req, res) => {
-  res.cookie("token", "");
+  res.cookie("token", "", {
+    "maxAge": 7 * 24 * 60 * 60 * 1000,
+    "httpOnly": true,
+    "sameSite": "strict",
+    "secure": process.env.NODE_ENVIRONMENT !== "development",
+  });
   res.status(200).json(new ApiResponse(200, null, "logged out successfully"))
 };
 
