@@ -20,6 +20,14 @@ const isLoggedIn = (req, res, next) => {
     where: {
       id: decoded.id,
     },
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      image: true,
+      role: true,
+      password: false,
+    }
   })
 
   if (!user) {
@@ -27,22 +35,14 @@ const isLoggedIn = (req, res, next) => {
   }
 
   // req.user = user;
-  req.user = {
-    email: user.email,
-    name: user.name,
-    image: user.image,
-    role: user.role,
-  }
-
+  req.user = user;
   next();
 }
 
 const isAdmin = asyncHandler(async (req, res, next) => {
-  const { email } = req.body;
+  const { role } = req.user;
 
-  const userRole = db.user.findUnique({ email }).role;
-
-  if (userRole !== "ADMIN") {
+  if (role !== "ADMIN") {
     return res.status(401).json(new ApiResponse(401, userRole, "user is not admin"));
   }
 
