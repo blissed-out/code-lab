@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken"
 import ApiResponse from "../utils/api-response.js";
 import { db } from "../libs/db.js";
+import asyncHandler from "../utils/asyncHandler.js";
+
 const isLoggedIn = (req, res, next) => {
+
   const token = req.cookies.token;
 
   if (!token) {
@@ -27,4 +30,16 @@ const isLoggedIn = (req, res, next) => {
   next();
 }
 
-export default isLoggedIn
+const isAdmin = asyncHandler(async (req, res) => {
+  const { email } = req.body;
+
+  const userRole = db.user.findUnique({ email }).role;
+
+  if (userRole !== "ADMIN") {
+    return res.status(401).json(new ApiResponse(401, userRole, "user is not admin"));
+  }
+
+  next();
+})
+
+export { isLoggedIn, isAdmin }
