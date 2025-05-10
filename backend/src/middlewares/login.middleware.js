@@ -27,10 +27,17 @@ const isLoggedIn = (req, res, next) => {
   }
 
   // req.user = user;
+  req.user = {
+    email: user.email,
+    name: user.name,
+    image: user.image,
+    role: user.role,
+  }
+
   next();
 }
 
-const isAdmin = asyncHandler(async (req, res) => {
+const isAdmin = asyncHandler(async (req, res, next) => {
   const { email } = req.body;
 
   const userRole = db.user.findUnique({ email }).role;
