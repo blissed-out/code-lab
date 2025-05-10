@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -8,23 +8,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        Int       @id @default(autoincrement())
+  email     String    @unique
+  name      String?
+  image     String?
+  role      Role      @default(USER)
+  password  String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  problems  Problem[]
+}
+
+model Problem {
+  id                Int        @id @default(autoincrement())
+  title             String
+  description       String
+  difficulty        Difficulty
+  tags              String[]
+  userId            Int
+  example           Json
+  constraints       String
+  hints             String?
+  editorial         String?
+  testcases         Json
+  codeSnippets      Json
+  referenceSolution Json
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @updatedAt
+  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 enum Role {
   ADMIN
   USER
 }
 
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  image     String?
-  role      Role     @default(USER)
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  // profile Profile? @relation(fields: [], references: [])
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
 }
-
-// model Profile {
-//     User User[]
-// }
