@@ -3,7 +3,7 @@ import ApiResponse from "../utils/api-response.js";
 import { db } from "../libs/db.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-const isLoggedIn = (req, res, next) => {
+export const isLoggedIn = (req, res, next) => {
 
   const token = req.cookies.token;
 
@@ -39,7 +39,7 @@ const isLoggedIn = (req, res, next) => {
   next();
 }
 
-const isAdmin = asyncHandler(async (req, res, next) => {
+export const isAdmin = asyncHandler(async (req, res, next) => {
   // to make it robust
 
   const userId = req.user.id;
@@ -60,4 +60,3 @@ const isAdmin = asyncHandler(async (req, res, next) => {
   next();
 })
 
-export { isLoggedIn, isAdmin }

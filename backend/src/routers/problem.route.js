@@ -15,32 +15,3 @@ route.post("/update-problem/:id", isLoggedIn, isAdmin, updateProblem)
 route.delete("/delete-problem/:id", isLoggedIn, isAdmin, deleteProblem)
 
 route.get("/get-solved-problem", isLoggedIn, getSolvedProblem)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
