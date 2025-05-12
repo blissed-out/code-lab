@@ -2,6 +2,7 @@ import { db } from "../libs/db";
 import { getJudge0LangagueId } from "../libs/judge0.lib";
 import ApiResponse from "../utils/api-response";
 import asyncHandler from "../utils/asyncHandler";
+import { submitBatch } from "../libs/judge0.lib";
 
 export const createProblem = asyncHandler(async (req, res) => {
 
@@ -20,8 +21,20 @@ export const createProblem = asyncHandler(async (req, res) => {
       return res.status(401).json(new ApiResponse(401, null, `Language ${language} is not supported`))
     }
 
-
+    const submission = testcases.map(({ input, output }) => ({
+      source_code: solutionCode,
+      language_id: languageId,
+      stdin: input,
+      expectedOutput: output
+    }))
   }
+
+  const submissionResult = await submitBatch(submission);
+
+  const tokens = submissionResult.map((res) => res.token);
+
+
+
 
 
 
