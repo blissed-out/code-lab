@@ -40,10 +40,21 @@ const isLoggedIn = (req, res, next) => {
 }
 
 const isAdmin = asyncHandler(async (req, res, next) => {
-  const { role } = req.user;
+  // to make it robust
 
-  if (role !== "ADMIN") {
-    return res.status(401).json(new ApiResponse(401, userRole, "user is not admin"));
+  const userId = req.user.id;
+
+  const user = db.user.findUnique({
+    where: {
+      id: userId
+    },
+    select: {
+      role: true
+    }
+  });
+
+  if (!user || user.role !== "ADMIN") {
+    return res.status(401).json(new ApiResponse(401, null, "Unauthorized access"));
   }
 
   next();
