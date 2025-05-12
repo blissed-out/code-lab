@@ -1,8 +1,7 @@
 import { db } from "../libs/db";
-import { getJudge0LangagueId } from "../libs/judge0.lib";
+import { getJudge0LangagueId, submitBatch, pollBatch } from "../libs/judge0.lib";
 import ApiResponse from "../utils/api-response";
 import asyncHandler from "../utils/asyncHandler";
-import { submitBatch } from "../libs/judge0.lib";
 
 export const createProblem = asyncHandler(async (req, res) => {
 
@@ -13,7 +12,11 @@ export const createProblem = asyncHandler(async (req, res) => {
   }
 
   // referenceSolution and testcases
-  for (const [language, solutionCode] of Object.entries(referenceSolution)) {
+  let language;
+  let solutionCode;
+  let submission;
+
+  for ([language, solutionCode] of Object.entries(referenceSolution)) {
 
     const languageId = getJudge0LangagueId(language);
 
@@ -21,7 +24,7 @@ export const createProblem = asyncHandler(async (req, res) => {
       return res.status(401).json(new ApiResponse(401, null, `Language ${language} is not supported`))
     }
 
-    const submission = testcases.map(({ input, output }) => ({
+    submission = testcases.map(({ input, output }) => ({
       source_code: solutionCode,
       language_id: languageId,
       stdin: input,
@@ -33,10 +36,27 @@ export const createProblem = asyncHandler(async (req, res) => {
 
   const tokens = submissionResult.map((res) => res.token);
 
+  const results = await pollBatch(tokens);
+
+  for (let i = 0; i < results.length; i++) {
+    if (results[i] !== 3) {
+      return res.status(200).json(new ApiResponse(403, null, `Testcase ${i + 1} failed for language ${language}`))
+    }
+
+    // res.status(200).json(new ApiResponse(200, null, `Testcase ${i + 1} passed for language ${language}`))
+
+    // save problem to the database
+
+    const newProblem = await db.user.create({
+      data: {
+        title, description, difficulty, tags, example, constraints, hints, editorial, testcases, codeSnippets, referenceSolution, userId: req.user.id
+      }
+    })
+
+    res.status(200).json(new ApiResponse(200, newProblem));
 
 
-
-
+  }
 
 })
 
