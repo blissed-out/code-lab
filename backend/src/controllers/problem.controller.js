@@ -1,7 +1,7 @@
-import { db } from "../libs/db";
-import { getJudge0LangagueId, submitBatch, pollBatch } from "../libs/judge0.lib";
-import ApiResponse from "../utils/api-response";
-import asyncHandler from "../utils/asyncHandler";
+import { db } from "../libs/db.js";
+import { getJudge0LangagueId, submitBatch, pollBatch } from "../libs/judge0.lib.js";
+import ApiResponse from "../utils/api-response.js";
+import asyncHandler from "../utils/asyncHandler.js";
 
 export const createProblem = asyncHandler(async (req, res) => {
 
