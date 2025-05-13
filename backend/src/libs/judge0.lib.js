@@ -29,9 +29,27 @@ export const pollBatch = async (tokens) => {
         tokens: tokens.join(","),
         base64_encoded: false
       }
-    })
+    });
+
 
     const results = data.submissions.status_id;
+
+    /* {
+      "id": 1,
+        "description": "In Queue"
+    },
+    {
+      "id": 2,
+        "description": "Processing"
+    },
+    {
+      "id": 3,
+        "description": "Accepted"
+    },
+    {
+      "id": 4,
+        "description": "Wrong Answer"
+    }, */
 
     const isAllDone = results.every(results !== 1 && results !== 2);
 
