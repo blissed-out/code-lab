@@ -44,7 +44,6 @@ export const isAdmin = asyncHandler(async (req, res, next) => {
   // to make it robust
 
   const userId = req.user.id;
-  console.log("this is userId from isAdmin middleware", userId);
 
   const user = await db.user.findUnique({
     where: {
