@@ -3,7 +3,7 @@ import ApiResponse from "../utils/api-response.js";
 import { db } from "../libs/db.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
-export const isLoggedIn = (req, res, next) => {
+export const isLoggedIn = asyncHandler(async (req, res, next) => {
 
   const token = req.cookies.token;
 
@@ -16,7 +16,7 @@ export const isLoggedIn = (req, res, next) => {
   // if (!decoded) {
   //   res.status(401).json(new ApiResponse(401, null, "invalid token"));
   // }
-  const user = db.user.findUnique({
+  const user = await db.user.findUnique({
     where: {
       id: decoded.id,
     },
@@ -37,14 +37,15 @@ export const isLoggedIn = (req, res, next) => {
   // req.user = user;
   req.user = user;
   next();
-}
+});
 
 export const isAdmin = asyncHandler(async (req, res, next) => {
   // to make it robust
 
   const userId = req.user.id;
+  console.log("this is userId from isAdmin middleware", userId);
 
-  const user = db.user.findUnique({
+  const user = await db.user.findUnique({
     where: {
       id: userId
     },
