@@ -53,15 +53,14 @@ export const createProblem = asyncHandler(async (req, res) => {
       }
     })
 
-    res.status(200).json(new ApiResponse(200, newProblem));
-
-
+    res.status(200).json(new ApiResponse(200, newProblem, "Problem created successfully"));
   }
 
 })
 
 export const getAllProblems = asyncHandler(async (req, res) => {
-  const { title, description, difficulty, tags, example, constraints, hints, editorial, testcases, codeSnippets, referenceSolution } = req.body;
+
+
 
 })
 
