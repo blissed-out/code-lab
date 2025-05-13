@@ -18,7 +18,7 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
   // }
   const user = await db.user.findUnique({
     where: {
-      id: decoded.id,
+      id: parseInt(decoded),
     },
     select: {
       id: true,
@@ -36,6 +36,7 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
 
   // req.user = user;
   req.user = user;
+
   next();
 });
 

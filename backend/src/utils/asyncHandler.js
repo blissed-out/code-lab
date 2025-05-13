@@ -2,7 +2,7 @@ import ApiResponse from "./api-response.js";
 
 const asyncHandler = (requestHandler) => async (req, res, next) => {
   try {
-    await requestHandler(req, res);
+    await requestHandler(req, res, next);
   } catch (error) {
     console.error("Error", error)
     res.status(error.code).json(
