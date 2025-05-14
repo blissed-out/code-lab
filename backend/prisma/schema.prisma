@@ -9,15 +9,18 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  email     String    @unique
-  name      String?
-  image     String?
-  role      Role      @default(USER)
-  password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  problems  Problem[]
+  id            Int             @id @default(autoincrement())
+  email         String          @unique
+  name          String?
+  image         String?
+  role          Role            @default(USER)
+  password      String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  problems      Problem[]
+  submission    Submission[]
+  problemSolved problemSolved[]
+  Playlist      Playlist[]
 }
 
 model Problem {
@@ -36,7 +39,106 @@ model Problem {
   referenceSolution Json
   createdAt         DateTime   @default(now())
   updatedAt         DateTime   @updatedAt
-  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // relationships
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission        Submission[]
+  problemSolved     problemSolved[]
+  ProblemInPlaylist ProblemInPlaylist[]
+}
+
+model Submission {
+  id            Int     @id @default(autoincrement())
+  userId        Int
+  problemId     Int
+  sourceCode    Json
+  language      String
+  stdin         String?
+  stdout        String?
+  stderr        String?
+  compileOutput String?
+  status        String // accepted or wrong answer
+  memory        String?
+  time          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relation - problem, user, testCaseResult
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Problem Problem @relation(fields: [problemId], references: [id], onDelete: Cascade)
+
+  testCase TestCaseResult[]
+}
+
+model TestCaseResult {
+  id            Int     @id @default(autoincrement())
+  submissionId  Int
+  testCase      Int
+  passed        Boolean
+  stdout        String?
+  expected      String
+  stderr        String?
+  compileOutput String?
+  status        String
+  memory        String?
+  time          String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // relation - submission
+  submission Submission @relation(fields: [submissionId], references: [id])
+
+  @@index([submissionId])
+}
+
+model problemSolved {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  problemId Int
+
+  // relation - problem, user
+
+  problem Problem @relation(fields: [problemId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+}
+
+model Playlist {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // relation - problemInPlaylist, user
+
+  problemInPlaylist ProblemInPlaylist[]
+  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ProblemInPlaylist {
+  id         Int      @id @default(autoincrement())
+  problemId  Int
+  playlistId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // relation - Playlist, Problem
+  problem  Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+}
+
+model TokenBlackList {
+  id        Int      @id @default(autoincrement())
+  token     String
+  expiresAt DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum Role {
