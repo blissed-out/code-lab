@@ -21,7 +21,7 @@ model User {
   problems       Problem[]
   submission     Submission[]
   solvedProblems problemSolved[]
-  Playlist       Playlist[]
+  playlist       Playlist[]
 }
 
 model Problem {
@@ -42,10 +42,10 @@ model Problem {
   updatedAt         DateTime   @updatedAt
 
   // relationships
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
-  submission        Submission[]
-  solvedBy          problemSolved[]
-  ProblemInPlaylist ProblemInPlaylist[]
+  user             User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submission       Submission[]
+  solvedBy         problemSolved[]
+  problemPlayLists ProblemInPlaylist[]
 }
 
 model Submission {
@@ -120,8 +120,10 @@ model Playlist {
 
   // relation - problemInPlaylist, user
 
-  problemInPlaylist ProblemInPlaylist[]
-  user              User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problems ProblemInPlaylist[]
+  user     User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([name, userId])
 }
 
 model ProblemInPlaylist {
@@ -134,6 +136,8 @@ model ProblemInPlaylist {
   // relation - Playlist, Problem
   problem  Problem  @relation(fields: [problemId], references: [id], onDelete: Cascade)
   playlist Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+
+  @@unique([playlistId, problemId])
 }
 
 model TokenBlackList {
