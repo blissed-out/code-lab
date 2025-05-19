@@ -89,7 +89,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   }
 
   const problemInPlaylist = await db.problemInPlaylist.createMany({
-    data: problemIds.map((problemId) => {
+    data: problemIds.map((problemId) => ({
       problemIds,
       playlistIdm
     })
@@ -110,7 +110,7 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
 
   const deletePlaylist = await db.playlist.delete({
     where: {
-      playlistId,
+      id: playlistId,
     },
   })
 
