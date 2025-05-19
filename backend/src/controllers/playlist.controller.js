@@ -81,12 +81,11 @@ export const getPlayListDetails = asyncHandler(async (req, res) => {
 
 export const addProblemToPlaylist = asyncHandler(async (req, res) => {
 
-  const { problemId } = req.params;
-  const playlistId = req.body.playlistId;
+  const { problemIds } = req.body;
+  const {playlistId} = req.body;
 
-
-  if (!problemId) {
-    return res.status(400).json(new ApiResponse(400, null, "Invalid problemId"));
+  if (!Array.isArray(problemsId) || problemsId.length === 0) {
+    return res.status(400).json ( new ApiResponse(400, null, "invalid problemId"));
   }
 
   const problemInPlaylist = await db.problemInPlaylist.create({
