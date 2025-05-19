@@ -54,7 +54,7 @@ export const pollBatch = async (tokens) => {
     console.log("this is result", results)
 
     const isAllDone = results.every(
-      (r) => { r.status.id !== 1 && r.status.id !== 2 }
+      (r) => ( r.status.id !== 1 && r.status.id !== 2 )
     );
 
     if (isAllDone) {
