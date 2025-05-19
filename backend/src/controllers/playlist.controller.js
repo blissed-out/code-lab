@@ -30,6 +30,14 @@ export const getAllListDetails = asyncHandler(async (req, res) => {
 
     where: { userId: userId },
 
+    include: {
+      problems: {
+        include: {
+          problem: true,
+        }
+      }
+    },
+
   })
 
   if (!playlistName) {
@@ -42,29 +50,31 @@ export const getAllListDetails = asyncHandler(async (req, res) => {
 
 export const getPlayListDetails = asyncHandler(async (req, res) => {
 
-  const userId = req.body.id;
+  const { playlistId } = req.params;
 
-  const { problemId } = req.params;
+  if (!playlistId) {
 
-  if (!problemId) {
-
-    return res.status(404).json(new ApiResponse(404, null, "Problem Id not found"));
+    return res.status(404).json(new ApiResponse(404, null, "Playlist Id not found"));
   }
 
-  const playlistDetails = await db.ProblemInPlaylist.findUnique({
+  const playlistDetails = await db.playlist.findUnique({
 
     where: {
-      userId: userId
+      playlistId,
     },
 
     include: {
-
-      where: {
-        problemId: problemId,
-      },
-    }
+      problems: {
+        include: {
+          problem: true,
+        }
+      }
+    },
 
   })
+
+
+  res.status(200).json( new ApiResponse(200, playlistDetails, "playlist details fetched successfully"));
 
 })
 
@@ -117,7 +127,7 @@ export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
     return res.status(401).json( new ApiResonse(401, null, "No problem Id found to delete"));
   }
 
-  cosnt removeProblem = await db.problemInPlaylist.delete({
+  const removeProblem = await db.problemInPlaylist.delete({
     where: {problemid},
   })
 
