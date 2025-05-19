@@ -93,6 +93,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
       problemIds,
       playlistIdm
     })
+    )
   })
 
   res.status(200).json( new ApiResponse(200, problemInPlaylist, "problem added to the playlist successfully"));
