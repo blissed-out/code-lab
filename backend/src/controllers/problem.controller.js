@@ -40,7 +40,7 @@ export const createProblem = asyncHandler(async (req, res) => {
   const results = await pollBatch(tokens);
 
   for (let i = 0; i < results.length; i++) {
-    if (results[i] !== 3) {
+    if (results[i].status.id !== 3) {
       return res.status(200).json(new ApiResponse(403, null, `Testcase ${i + 1} failed for language ${language}`))
     }
 
