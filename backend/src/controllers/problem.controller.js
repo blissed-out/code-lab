@@ -170,6 +170,26 @@ export const deleteProblem = asyncHandler(async (req, res) => {
 })
 
 export const getAllSolvedProblemsByUser = asyncHandler(async (req, res) => {
-  const { title, description, difficulty, tags, example, constraints, hints, editorial, testcases, codeSnippets, referenceSolution } = req.body;
+
+  const userId = req.user.id;
+
+  const problem = await db.problem.findMany({
+    solvedBy: {
+      some: {
+        userId,
+      },
+
+      include: {
+        solvedby: {
+          where: {
+            userId
+          }
+        }
+      }
+    }
+  })
+
+  res.status(200).json(new ApiResponse(200, problem, "problems fetched succsssfully"));
+
 })
 
