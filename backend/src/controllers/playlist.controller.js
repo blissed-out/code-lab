@@ -120,14 +120,19 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
 
 export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
 
-  const {problemId} = req.user.id;
+  const {problemIds, playlistId} = req.body;
 
-  if (!problemId) {
-    return res.status(401).json( new ApiResonse(401, null, "No problem Id found to delete"));
+  if (!Array.isArray(problemId) || problemId.length === 0) {
+    return res.status(401).json( new ApiResonse(401, null, "Invalid problem id"));
   }
 
-  const removeProblem = await db.problemInPlaylist.delete({
-    where: {problemid},
+  const removeProblem = await db.problemInPlaylist.deleteMany({
+    where: {
+      playlistId,
+      problemId: {
+        in: ProblemsId,
+      }
+    }
   })
 
   res.status(200).json( new ApiResponse(200, removeProblem, "problem deleted from playlist successfully"));
