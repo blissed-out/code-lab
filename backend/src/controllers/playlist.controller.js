@@ -88,14 +88,14 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
     return res.status(400).json ( new ApiResponse(400, null, "invalid problemId"));
   }
 
-  const problemInPlaylist = await db.problemInPlaylist.create({
-    data: {
-      problemId,
-      playlistId,
-    }
-          })
+  const problemInPlaylist = await db.problemInPlaylist.createMany({
+    data: problemIds.map((problemId) => {
+      problemIds,
+      playlistIdm
+    })
+  })
 
-          res.status(200).json( new ApiResponse(200, problemInPlaylist, "problem added to the playlist successfully"));
+  res.status(200).json( new ApiResponse(200, problemInPlaylist, "problem added to the playlist successfully"));
 
 })
 
