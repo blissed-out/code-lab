@@ -103,7 +103,7 @@ export const updateProblem = asyncHandler(async (req, res) => {
 
     where: { id },
 
-    data: { title, description, difficulty, tags, example, constraints, hints, editorial, testcases, codeSnippets, referenceSolution }
+    data: { title, description, difficulty: difficulty, tags, example, constraints, hints, editorial, testcases, codeSnippets, referenceSolution }
 
   });
 
@@ -139,11 +139,10 @@ export const updateProblem = asyncHandler(async (req, res) => {
   const results = await pollBatch(tokens);
 
   for (let i = 0; i < results.length; i++) {
-    if (results[i] !== 3) {
+    if (results[i].status.id !== 3) {
       return res.status(200).json(new ApiResponse(403, null, `Testcase ${i + 1} failed for language ${language}`))
     }
-
-    // res.status(200).json(new ApiResponse(200, null, `Testcase ${i + 1} passed for language ${language}`))
+  }
 
     // save problem to the database
 
@@ -154,10 +153,8 @@ export const updateProblem = asyncHandler(async (req, res) => {
     })
 
     res.status(200).json(new ApiResponse(200, newProblem, "Problem updated successfully"));
-  }
 
 })
-
 
 export const deleteProblem = asyncHandler(async (req, res) => {
   const { id } = req.params;
