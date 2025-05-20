@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -9,7 +9,7 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   email     String   @unique
   name      String?
   image     String?
@@ -25,12 +25,12 @@ model User {
 }
 
 model Problem {
-  id                Int        @id @default(autoincrement())
+  id                String     @id @default(uuid())
   title             String
   description       String
   difficulty        Difficulty
   tags              String[]
-  userId            Int
+  userId            String
   example           Json
   constraints       String
   hints             String?
@@ -49,9 +49,9 @@ model Problem {
 }
 
 model Submission {
-  id            Int     @id @default(autoincrement())
-  userId        Int
-  problemId     Int
+  id            String  @id @default(uuid())
+  userId        String
+  problemId     String
   sourceCode    Json
   language      String
   stdin         String?
@@ -74,8 +74,8 @@ model Submission {
 }
 
 model TestCaseResult {
-  id            Int     @id @default(autoincrement())
-  submissionId  Int
+  id            String  @id @default(uuid())
+  submissionId  String
   testCase      Int
   passed        Boolean
   stdout        String?
@@ -96,12 +96,11 @@ model TestCaseResult {
 }
 
 model problemSolved {
-  id        Int      @id @default(autoincrement())
-  userId    Int
+  id        String   @id @default(uuid())
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  problemId Int
-
+  problemId String
   // relation - problem, user
 
   problem Problem @relation(fields: [problemId], references: [id])
@@ -111,8 +110,8 @@ model problemSolved {
 }
 
 model Playlist {
-  id          Int      @id @default(autoincrement())
-  userId      Int
+  id          String   @id @default(uuid())
+  userId      String
   name        String
   description String?
   createdAt   DateTime @default(now())
@@ -127,9 +126,9 @@ model Playlist {
 }
 
 model ProblemInPlaylist {
-  id         Int      @id @default(autoincrement())
-  problemId  Int
-  playlistId Int
+  id         String   @id @default(uuid())
+  problemId  String
+  playlistId String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
 
@@ -141,7 +140,7 @@ model ProblemInPlaylist {
 }
 
 model TokenBlackList {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   token     String
   expiresAt DateTime @default(now())
   createdAt DateTime @default(now())

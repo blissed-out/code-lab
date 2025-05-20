@@ -43,19 +43,26 @@ export const createProblem = asyncHandler(async (req, res) => {
     if (results[i].status.id !== 3) {
       return res.status(200).json(new ApiResponse(403, null, `Testcase ${i + 1} failed for language ${language}`))
     }
-
-    // res.status(200).json(new ApiResponse(200, null, `Testcase ${i + 1} passed for language ${language}`))
-
-    // save problem to the database
-
-    const newProblem = await db.problem.create({
-      data: {
-        title, description, difficulty, tags, example, constraints, hints, editorial, testcases, codeSnippets, referenceSolution, userId: req.user.id
-      }
-    })
-
-    res.status(200).json(new ApiResponse(200, newProblem, "Problem created successfully"));
   }
+
+  const newProblem = await db.problem.create({
+    data: {
+      title,
+      description,
+      difficulty,
+      tags,
+      example,
+      constraints,
+      hints,
+      editorial,
+      testcases,
+      codeSnippets,
+      referenceSolution,
+      userId: req.user.id,
+    },
+  })
+
+  res.status(200).json(new ApiResponse(200, newProblem, "Problem created successfully"));
 
 })
 
