@@ -1,17 +1,20 @@
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 import ApiResponse from "../utils/api-response.js";
 import { db } from "../libs/db.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const isLoggedIn = asyncHandler(async (req, res, next) => {
-
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json(new ApiResponse(401, null, "User not logged in"));
+    return res
+      .status(401)
+      .json(new ApiResponse(401, null, "User not logged in"));
   }
 
-  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, { algorithms: "HS256" });
+  const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY, {
+    algorithms: "HS256",
+  });
 
   // if (!decoded) {
   //   res.status(401).json(new ApiResponse(401, null, "invalid token"));
@@ -27,11 +30,11 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
       image: true,
       role: true,
       password: false,
-    }
-  })
+    },
+  });
 
   if (!user) {
-    return res.status(404).json(new ApiResponse(404, null, "user not found"))
+    return res.status(404).json(new ApiResponse(404, null, "user not found"));
   }
 
   // req.user = user;
@@ -47,17 +50,18 @@ export const isAdmin = asyncHandler(async (req, res, next) => {
 
   const user = await db.user.findUnique({
     where: {
-      id: userId
+      id: userId,
     },
     select: {
-      role: true
-    }
+      role: true,
+    },
   });
 
   if (!user || user.role !== "ADMIN") {
-    return res.status(401).json(new ApiResponse(401, null, "Unauthorized access"));
+    return res
+      .status(401)
+      .json(new ApiResponse(401, null, "Unauthorized access"));
   }
 
   next();
-})
-
+});

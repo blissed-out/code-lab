@@ -1,8 +1,9 @@
-import { db } from "../libs/db.js"; import asyncHandler from "../utils/asyncHandler.js";
+import { db } from "../libs/db.js";
+import asyncHandler from "../utils/asyncHandler.js";
 import bcrypt from "bcryptjs";
 import { Role } from "../generated/prisma/index.js";
 import ApiResponse from "../utils/api-response.js";
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
 const register = asyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
@@ -34,15 +35,14 @@ const register = asyncHandler(async (req, res) => {
     },
   });
 
-
   const data = {
     name: newUser.name,
     email: newUser.email,
   };
 
-  res.status(200).json(new ApiResponse(200, data, "user registered successfully")
-  );
-
+  res
+    .status(200)
+    .json(new ApiResponse(200, data, "user registered successfully"));
 });
 
 const login = asyncHandler(async (req, res) => {
@@ -51,11 +51,13 @@ const login = asyncHandler(async (req, res) => {
   const existingUser = await db.user.findUnique({
     where: {
       email,
-    }
-  })
+    },
+  });
 
   if (!existingUser) {
-    return res.status(401).json(new ApiResponse(401, email, "User is not registered"))
+    return res
+      .status(401)
+      .json(new ApiResponse(401, email, "User is not registered"));
   }
 
   const hashedPassword = existingUser.password;
@@ -63,40 +65,45 @@ const login = asyncHandler(async (req, res) => {
   const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
 
   if (!isPasswordCorrect) {
-    return res.status(401).json(new ApiResponse(401, email, "Incorrect credentials"));
+    return res
+      .status(401)
+      .json(new ApiResponse(401, email, "Incorrect credentials"));
   }
 
-  const token = jwt.sign(existingUser.id, process.env.JWT_SECRET_KEY, {
-    algorithm: "HS256",
-  }, { expiresIn: process.env.JWT_EXPIRY });
+  const token = jwt.sign(
+    existingUser.id,
+    process.env.JWT_SECRET_KEY,
+    {
+      algorithm: "HS256",
+    },
+    { expiresIn: process.env.JWT_EXPIRY },
+  );
 
   const cookieOption = {
-    "maxAge": 7 * 24 * 60 * 60 * 1000,
-    "httpOnly": true,
-    "sameSite": "strict",
-    "secure": process.env.NODE_ENVIRONMENT !== "development",
-  }
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENVIRONMENT !== "development",
+  };
 
   res.cookie("token", token, cookieOption);
 
   const data = {
     name: existingUser.name,
     email: existingUser.email,
-  }
+  };
 
   res.status(200).json(new ApiResponse(200, data, "Login successfully"));
-
 });
 
 const logout = (req, res) => {
   res.cookie("token", "", {
-    "maxAge": 7 * 24 * 60 * 60 * 1000,
-    "httpOnly": true,
-    "sameSite": "strict",
-    "secure": process.env.NODE_ENVIRONMENT !== "development",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENVIRONMENT !== "development",
   });
-  res.status(200).json(new ApiResponse(200, null, "logged out successfully"))
+  res.status(200).json(new ApiResponse(200, null, "logged out successfully"));
 };
-
 
 export { register, login, logout };

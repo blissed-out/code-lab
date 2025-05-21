@@ -1,8 +1,8 @@
 import express from "express";
 import authRoute from "./routers/auth.route.js";
-import problemRoute from "./routers/problem.route.js"
+import problemRoute from "./routers/problem.route.js";
 import executionRoute from "./routers/executeCode.route.js";
-import cookieParser from "cookie-parser"
+import cookieParser from "cookie-parser";
 import submissionRoute from "./routers/submission.route.js";
 import playlistRouter from "./routers/playlist.route.js";
 

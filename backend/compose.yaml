@@ -1,7 +1,6 @@
 # Use postgres/example user/password credentials
 
 services:
-
   db:
     image: postgres
     restart: always
@@ -16,7 +15,7 @@ services:
     environment:
       POSTGRES_USER: MIT
       POSTGRES_PASSWORD: MIT
-    ports: 
+    ports:
       - 5432:5432
 
   adminer:
