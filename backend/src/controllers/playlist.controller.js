@@ -89,7 +89,7 @@ export const getPlayListDetails = asyncHandler(async (req, res) => {
 
 export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   const { problemIds } = req.body;
-  const { playlistId } = req.body;
+  const { playlistId } = req.params;
 
   if (!Array.isArray(problemIds) || problemIds.length === 0) {
     return res
@@ -99,8 +99,8 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
 
   const problemInPlaylist = await db.problemInPlaylist.createMany({
     data: problemIds.map((problemId) => ({
-      problemIds,
       playlistId,
+      problemId,
     })),
   });
 
@@ -116,15 +116,16 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
 });
 
 export const deletePlaylist = asyncHandler(async (req, res) => {
-  const playlistId = req.body.playlistId;
+  const { playlistId } = req.params;
 
   if (!playlistId) {
     return res
       .status(401)
-      .json(new ApiResopnse(401, null, "no playlist Id found to delete"));
+      .json(new ApiResponse(401, null, "no playlist Id found to delete"));
   }
 
-  const deletePlaylist = await db.playlist.delete({
+  // delete throws error for some reason
+  const deletePlaylist = await db.playlist.deleteMany({
     where: {
       id: playlistId,
     },
@@ -132,7 +133,7 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
 
   res
     .status(200)
-    .json(new ApiResonse(200, deletePlaylist, "playlist deleted succesfully"));
+    .json(new ApiResponse(200, deletePlaylist, "playlist deleted succesfully"));
 });
 
 export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
