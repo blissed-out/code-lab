@@ -64,7 +64,7 @@ export const getPlayListDetails = asyncHandler(async (req, res) => {
 
   const playlistDetails = await db.playlist.findUnique({
     where: {
-      playlistId,
+      id: playlistId,
     },
 
     include: {
@@ -91,7 +91,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   const { problemIds } = req.body;
   const { playlistId } = req.body;
 
-  if (!Array.isArray(problemsId) || problemsId.length === 0) {
+  if (!Array.isArray(problemIds) || problemIds.length === 0) {
     return res
       .status(400)
       .json(new ApiResponse(400, null, "invalid problemId"));
@@ -100,7 +100,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   const problemInPlaylist = await db.problemInPlaylist.createMany({
     data: problemIds.map((problemId) => ({
       problemIds,
-      playlistIdm,
+      playlistId,
     })),
   });
 
