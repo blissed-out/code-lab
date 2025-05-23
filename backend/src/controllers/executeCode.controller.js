@@ -9,7 +9,7 @@ import { db } from "../libs/db.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
 export const executeCode = asyncHandler(async (req, res) => {
-  const { source_code, languageId, stdin, expected_output, problemId } =
+  const { source_code, languageId, stdin, expected_outputs, problemId } =
     req.body;
 
   const userId = req.user.id;
@@ -19,8 +19,8 @@ export const executeCode = asyncHandler(async (req, res) => {
   if (
     !Array.isArray(stdin) ||
     stdin.length === 0 ||
-    !Array.isArray(expected_output) ||
-    expected_output.length !== stdin.length
+    !Array.isArray(expected_outputs) ||
+    expected_outputs.length !== stdin.length
   ) {
     return res
       .status(400)
@@ -31,11 +31,12 @@ export const executeCode = asyncHandler(async (req, res) => {
 
   const submissions = stdin.map((input) => ({
     source_code,
-    languageId,
+    language_id: languageId,
     stdin: input,
   }));
 
   // send the batch of submissions to judge0
+  console.log("this is submissions here--------*-", submissions);
 
   const submitResponse = await submitBatch(submissions);
 
@@ -45,13 +46,15 @@ export const executeCode = asyncHandler(async (req, res) => {
 
   const results = await pollBatch(token);
 
+  console.log("result under executeCode controller ----------- ", results);
+
   // Analyze the test case results
 
   let allPassed = true;
 
   const detailedResults = results.map((result, i) => {
     const stdout = result.stdout?.trim();
-    const expected_output = expected_output[i].trim();
+    const expected_output = expected_outputs[i]?.trim();
     const passed = stdout === expected_output;
 
     if (!passed) allPassed = false;
@@ -71,11 +74,11 @@ export const executeCode = asyncHandler(async (req, res) => {
 
   // store the detailedResults in our database
 
-  const submission = await db.submissions.create({
+  const submission = await db.submission.create({
     data: {
       userId,
       problemId,
-      source_code,
+      sourceCode: source_code,
       language: getLanguageName(languageId),
       stdin: stdin.join("\n"),
       stdout: JSON.stringify(detailedResults.map((r) => r.stdout)),
@@ -86,8 +89,9 @@ export const executeCode = asyncHandler(async (req, res) => {
         ? JSON.stringify(detailedResults.map((r) => r.compiled_output))
         : null,
       status: allPassed ? "Accepted" : "Wrong Answer",
-      memory: JSON.stringify(detailedResults.map((r) => r.memory)),
-      time: JSON.stringify(detailedResults.map((r) => r.time)),
+      memory: detailedResults.some((r) => r.memory)
+        ? JSON.stringify(detailedResults.map((r) => r.memory))
+        : null,
     },
   });
 
@@ -113,11 +117,11 @@ export const executeCode = asyncHandler(async (req, res) => {
   // save individual test cases resutls
 
   const testResults = detailedResults.map((result) => ({
-    submissionsId: submission.id,
+    submissionId: submission.id,
     testCase: result.testCase,
     passed: result.passed,
     stdout: result.stdout,
-    expected: result.expected_output,
+    expected: result.expected,
     stderr: result.stderr,
     compileOutput: result.compiled_output,
     status: result.status,
@@ -133,7 +137,7 @@ export const executeCode = asyncHandler(async (req, res) => {
     where: {
       id: submission.id,
     },
-    includes: {
+    include: {
       testCase: true,
     },
   });

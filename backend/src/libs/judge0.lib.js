@@ -13,14 +13,12 @@ export const getJudge0LangagueId = (language) => {
 };
 
 export const submitBatch = async (submissions) => {
-  console.log("this is submissions-----------", submissions);
+  console.log("submissions--------", submissions);
 
   const { data } = await axios.post(
-    `http://${process.env.JUDGE0_API}/submissions/batch?base64_encoded=false&wait=false`,
+    `http://${process.env.JUDGE0_API}/submissions/batch?base64_encoded=false`,
     { submissions },
   );
-
-  console.log("this is data from axios---------", data);
 
   return data; // arrays of token
 };
@@ -41,7 +39,6 @@ export const pollBatch = async (tokens) => {
 
     const results = data.submissions;
 
-    console.log("this is results------------", results);
     /* {
       "id": 1,
         "description": "In Queue"
@@ -78,5 +75,5 @@ export const getLanguageName = (languageId) => {
     62: "java",
   };
 
-  return language(languageId) || "Unknown";
+  return language[languageId] || "Unknown";
 };

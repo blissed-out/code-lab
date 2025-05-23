@@ -14,13 +14,13 @@ export const createProblem = asyncHandler(async (req, res) => {
     description,
     difficulty,
     tags,
-    example,
+    examples,
     constraints,
     hints,
     editorial,
     testcases,
     codeSnippets,
-    referenceSolution,
+    referenceSolutions,
   } = req.body;
 
   if (req.user.role !== "ADMIN") {
@@ -29,7 +29,7 @@ export const createProblem = asyncHandler(async (req, res) => {
       .json(new ApiResponse(403, null, "Unauthorized access"));
   }
 
-  for (const [language, solutionCode] of Object.entries(referenceSolution)) {
+  for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
     const languageId = getJudge0LangagueId(language);
 
     if (!languageId) {
@@ -47,13 +47,14 @@ export const createProblem = asyncHandler(async (req, res) => {
       expectedOutput: output,
     }));
 
-    console.log("this is submission here", submission);
-
+    console.log("typeof submissions in pcs", typeof submission);
     const submissionResult = await submitBatch(submission);
 
     const tokens = submissionResult.map((res) => res.token);
 
     const results = await pollBatch(tokens);
+
+    console.log("this is results here-----------", results);
 
     for (let i = 0; i < results.length; i++) {
       if (results[i].status.id !== 3) {
@@ -75,13 +76,13 @@ export const createProblem = asyncHandler(async (req, res) => {
       description,
       difficulty,
       tags,
-      example,
+      examples,
       constraints,
       hints,
       editorial,
       testcases,
       codeSnippets,
-      referenceSolution,
+      referenceSolutions,
       userId: req.user.id,
     },
   });
@@ -129,13 +130,13 @@ export const updateProblem = asyncHandler(async (req, res) => {
     description,
     difficulty,
     tags,
-    example,
+    examples,
     constraints,
     hints,
     editorial,
     testcases,
     codeSnippets,
-    referenceSolution,
+    referenceSolutions,
   } = req.body;
 
   const updateProblem = await db.problem.update({
@@ -146,13 +147,13 @@ export const updateProblem = asyncHandler(async (req, res) => {
       description,
       difficulty: difficulty,
       tags,
-      example,
+      examples,
       constraints,
       hints,
       editorial,
       testcases,
       codeSnippets,
-      referenceSolution,
+      referenceSolutions,
     },
   });
 
@@ -162,12 +163,12 @@ export const updateProblem = asyncHandler(async (req, res) => {
       .json(new ApiResponse(404, null, "Failure in updating the problem"));
   }
 
-  // referenceSolution and testcases
+  // referenceSolutions and testcases
   let language;
   let solutionCode;
   let submission;
 
-  for ([language, solutionCode] of Object.entries(referenceSolution)) {
+  for ([language, solutionCode] of Object.entries(referenceSolutions)) {
     const languageId = getJudge0LangagueId(language);
 
     if (!languageId) {
@@ -214,13 +215,13 @@ export const updateProblem = asyncHandler(async (req, res) => {
       description,
       difficulty,
       tags,
-      example,
+      examples,
       constraints,
       hints,
       editorial,
       testcases,
       codeSnippets,
-      referenceSolution,
+      referenceSolutions,
       userId: req.user.id,
     },
   });
