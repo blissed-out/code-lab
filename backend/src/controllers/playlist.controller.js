@@ -139,7 +139,7 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
 export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
   const { problemIds, playlistId } = req.body;
 
-  if (!Array.isArray(problemId) || problemId.length === 0) {
+  if (!Array.isArray(problemIds) || problemIds.length === 0) {
     return res
       .status(401)
       .json(new ApiResonse(401, null, "Invalid problem id"));
@@ -149,7 +149,7 @@ export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
     where: {
       playlistId,
       problemId: {
-        in: ProblemsId,
+        in: problemIds,
       },
     },
   });
