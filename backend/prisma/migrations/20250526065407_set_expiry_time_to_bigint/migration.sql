@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "User" ALTER COLUMN "tokenExpiry" SET DATA TYPE BIGINT;

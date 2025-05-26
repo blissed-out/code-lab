@@ -4,8 +4,10 @@ import bcrypt from "bcryptjs";
 import { Role } from "../generated/prisma/index.js";
 import ApiResponse from "../utils/api-response.js";
 import jwt from "jsonwebtoken";
+import crypto from "node:crypto";
+import { sendEmailToUser } from "../utils/mail.js";
 
-const register = asyncHandler(async (req, res) => {
+export const register = asyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
 
   const existingUser = await db.user.findUnique({
@@ -26,12 +28,23 @@ const register = asyncHandler(async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const token = crypto.randomBytes(32).toString("hex");
+
+  console.log("token to be sent: ", token);
+
+  // send mail to user
+  await sendEmailToUser(token);
+
+  const expiryTime = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
+
   const newUser = await db.user.create({
     data: {
       email,
       name,
       password: hashedPassword,
       role: Role.USER,
+      emailToken: token,
+      tokenExpiry: expiryTime,
     },
   });
 
@@ -45,7 +58,7 @@ const register = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, data, "user registered successfully"));
 });
 
-const login = asyncHandler(async (req, res) => {
+export const login = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
   const existingUser = await db.user.findUnique({
@@ -96,7 +109,7 @@ const login = asyncHandler(async (req, res) => {
   res.status(200).json(new ApiResponse(200, data, "Login successfully"));
 });
 
-const logout = (req, res) => {
+export const logout = (req, res) => {
   res.cookie("token", "", {
     maxAge: 7 * 24 * 60 * 60 * 1000,
     httpOnly: true,
@@ -106,4 +119,69 @@ const logout = (req, res) => {
   res.status(200).json(new ApiResponse(200, null, "logged out successfully"));
 };
 
-export { register, login, logout };
+export const verifyEmail = asyncHandler(async (req, res) => {
+  // get data
+  // validate data
+  // send response and set value isEmailVerified to true
+
+  const { token } = req.params;
+
+  console.log("this is token from params: ", token);
+
+  if (!token) {
+    return res.status(400).json(new ApiResponse(400, null, "Invalid token"));
+  }
+
+  const user = await db.user.findUnique({
+    where: {
+      emailToken: token,
+    },
+    select: {
+      email: true,
+      name: true,
+      role: true,
+      emailToken: true,
+      tokenExpiry: true,
+    },
+  });
+
+  if (!user) {
+    return res.status(403).json(new ApiResponse(403, null, "Invalid token"));
+  }
+
+  // check token expiration
+
+  const expiryTime = Number(user.tokenExpiry);
+
+  console.log("this is expiryTime", expiryTime);
+
+  if (expiryTime <= Date.now()) {
+    return res.status(401).json(new ApiResponse(401, null, "Token expired"));
+  }
+
+  if (token !== user.emailToken) {
+    return res.status(401).json(new ApiResponse(403, null, "Invalid token"));
+  }
+
+  await db.user.update({
+    where: {
+      emailToken: token,
+    },
+
+    data: {
+      emailToken: null,
+      isEmailVerified: true,
+      tokenExpiry: null,
+    },
+  });
+
+  const data = {
+    email: user.email,
+    name: user.name,
+    role: user.role,
+  };
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, data, "User verified successfully"));
+});
