@@ -30,8 +30,6 @@ export const register = asyncHandler(async (req, res) => {
 
   const token = crypto.randomBytes(32).toString("hex");
 
-  console.log("token to be sent: ", token);
-
   // send mail to user
   await sendEmailToUser(token);
 
@@ -126,8 +124,6 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
   const { token } = req.params;
 
-  console.log("this is token from params: ", token);
-
   if (!token) {
     return res.status(400).json(new ApiResponse(400, null, "Invalid token"));
   }
@@ -152,8 +148,6 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   // check token expiration
 
   const expiryTime = Number(user.tokenExpiry);
-
-  console.log("this is expiryTime", expiryTime);
 
   if (expiryTime <= Date.now()) {
     return res.status(401).json(new ApiResponse(401, null, "Token expired"));
@@ -184,4 +178,14 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   res
     .status(200)
     .json(new ApiResponse(200, data, "User verified successfully"));
+});
+
+export const check = asyncHandler(async (req, res) => {
+  const data = {
+    user: user.req.user,
+  };
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, data, "User authentication successfull"));
 });
