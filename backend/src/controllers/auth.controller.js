@@ -22,8 +22,8 @@ export const register = asyncHandler(async (req, res) => {
     };
 
     return res
-      .status(401)
-      .json(new ApiResponse(401, data, "User already registered"));
+      .status(409)
+      .json(new ApiResponse(409, null, "Email already registered"));
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -78,7 +78,9 @@ export const login = asyncHandler(async (req, res) => {
   if (!existingUser) {
     return res
       .status(401)
-      .json(new ApiResponse(401, email, "User is not registered"));
+      .json(new ApiResponse(404, email, "Invalid credentials"));
+    {
+    }
   }
 
   const hashedPassword = existingUser.password;
@@ -126,7 +128,7 @@ export const logout = (req, res) => {
     sameSite: "strict",
     secure: process.env.NODE_ENVIRONMENT !== "development",
   });
-  res.status(200).json(new ApiResponse(200, null, "logged out successfully"));
+  res.status(204).end();
 };
 
 export const verifyEmail = asyncHandler(async (req, res) => {
