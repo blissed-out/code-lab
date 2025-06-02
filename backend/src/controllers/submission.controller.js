@@ -22,9 +22,7 @@ export const submitCode = asyncHandler(async (req, res) => {
     !Array.isArray(expected_outputs) ||
     expected_outputs.length !== stdin.length
   ) {
-    return res
-      .status(400)
-      .json(new ApiResponse(400, null, "Invalid or missing test cases"));
+    throw new ApiError(400, "Invalid or missing test cases");
   }
 
   // prepare each test cases for judge0 submissions
