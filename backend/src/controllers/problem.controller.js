@@ -5,6 +5,7 @@ import {
   submitBatch,
   pollBatch,
 } from "../libs/judge0.lib.js";
+import ApiError from "../utils/api-error.js";
 import ApiResponse from "../utils/api-response.js";
 import asyncHandler from "../utils/asyncHandler.js";
 
@@ -24,20 +25,14 @@ export const createProblem = asyncHandler(async (req, res) => {
   } = req.body;
 
   if (req.user.role !== "ADMIN") {
-    return res
-      .status(403)
-      .json(new ApiResponse(403, null, "Unauthorized access"));
+    throw new ApiError(403, "You are not authorized to create a problem");
   }
 
   for (const [language, solutionCode] of Object.entries(referenceSolutions)) {
     const languageId = getJudge0LangagueId(language);
 
     if (!languageId) {
-      return res
-        .status(401)
-        .json(
-          new ApiResponse(401, null, `Language ${language} is not supported`),
-        );
+      throw new ApiError(401, `Language ${language} is not supported`);
     }
 
     const submission = testcases.map(({ input, output }) => ({
@@ -118,9 +113,7 @@ export const getProblemById = asyncHandler(async (req, res) => {
   });
 
   if (!problem) {
-    return res
-      .status(404)
-      .json(new ApiResponse(404, null, "Problem not found"));
+    throw new ApiError(404, "Problem not found");
   }
 
   res
@@ -166,9 +159,7 @@ export const updateProblem = asyncHandler(async (req, res) => {
   });
 
   if (!updateProblem) {
-    return res
-      .status(404)
-      .json(new ApiResponse(404, null, "Failure in updating the problem"));
+    throw new ApiError(404, "Problem not found");
   }
 
   // referenceSolutions and testcases
@@ -180,11 +171,7 @@ export const updateProblem = asyncHandler(async (req, res) => {
     const languageId = getJudge0LangagueId(language);
 
     if (!languageId) {
-      return res
-        .status(401)
-        .json(
-          new ApiResponse(401, null, `Language ${language} is not supported`),
-        );
+      throw new ApiError(404, `Language ${language} is not supported`);
     }
 
     submission = testcases.map(({ input, output }) => ({
@@ -245,12 +232,8 @@ export const deleteProblem = asyncHandler(async (req, res) => {
   const problem = db.problem.findUnique({ where: { id } });
 
   if (!problem) {
-    return res
-      .status(404)
-      .json(new ApiResponse(404, null, "problem not found"));
+    throw new ApiError(404, "Problem not found");
   }
-
-  console.log("this is delete problem id", id);
 
   await db.problem.delete({
     where: { id },

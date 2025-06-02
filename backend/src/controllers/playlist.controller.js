@@ -1,7 +1,7 @@
 import { db } from "../libs/db.js";
 import ApiResponse from "../utils/api-response.js";
 import asyncHandler from "../utils/asyncHandler.js";
-import ApiResopnse from "../utils/api-response.js";
+import ApiError from "../utils/api-error.js";
 
 export const createPlaylist = asyncHandler(async (req, res) => {
   const { name, description } = req.body;
@@ -37,9 +37,7 @@ export const getAllListDetails = asyncHandler(async (req, res) => {
   });
 
   if (!playlistName) {
-    return res
-      .status(404)
-      .json(new ApiResponse(404, null, "No playlist found"));
+    throw new ApiError(404, "No playlist found");
   }
 
   res
@@ -57,9 +55,7 @@ export const getPlayListDetails = asyncHandler(async (req, res) => {
   const { playlistId } = req.params;
 
   if (!playlistId) {
-    return res
-      .status(404)
-      .json(new ApiResponse(404, null, "Playlist Id not found"));
+    throw new ApiError(404, "Playlist Id not found");
   }
 
   const playlistDetails = await db.playlist.findUnique({
@@ -92,9 +88,7 @@ export const addProblemToPlaylist = asyncHandler(async (req, res) => {
   const { playlistId } = req.params;
 
   if (!Array.isArray(problemIds) || problemIds.length === 0) {
-    return res
-      .status(400)
-      .json(new ApiResponse(400, null, "invalid problemId"));
+    throw new ApiError(400, "Invalid problem ids");
   }
 
   const problemInPlaylist = await db.problemInPlaylist.createMany({
@@ -119,9 +113,7 @@ export const deletePlaylist = asyncHandler(async (req, res) => {
   const { playlistId } = req.params;
 
   if (!playlistId) {
-    return res
-      .status(401)
-      .json(new ApiResponse(401, null, "no playlist Id found to delete"));
+    throw new ApiError(404, "Playlist Id not found");
   }
 
   // delete throws error for some reason
@@ -140,9 +132,7 @@ export const removeProblemFromPlaylist = asyncHandler(async (req, res) => {
   const { problemIds, playlistId } = req.body;
 
   if (!Array.isArray(problemIds) || problemIds.length === 0) {
-    return res
-      .status(401)
-      .json(new ApiResonse(401, null, "Invalid problem id"));
+    throw new ApiError(400, "Invalid problem ids");
   }
 
   const removeProblem = await db.problemInPlaylist.deleteMany({
