@@ -28,6 +28,8 @@ import SubmissionsList from "../components/SubmissionList";
 const ProblemPage = () => {
   const { id } = useParams();
 
+  console.log("ProblemPage rendered with id:", id);
+
   const { getProblemById, problem, isProblemLoading } = useProblemStore();
 
   const {
@@ -88,7 +90,7 @@ const ProblemPage = () => {
       const expected_outputs = problem.testcases.map((tc) => tc.output);
       submitCode(code, language_id, stdin, expected_outputs, id);
     } catch (error) {
-      console.log("Error executing code", error);
+      console.error("Error executing code", error);
     }
   };
 
@@ -101,10 +103,8 @@ const ProblemPage = () => {
       });
       const expected_outputs = problem.testcases.map((tc) => tc.output);
       runCode(code, language_id, stdin, expected_outputs, id);
-
-      console.log("submit solution clicked");
     } catch (error) {
-      console.log("Error in handRunCode: ", error);
+      console.error("Error in handRunCode: ", error);
     }
   };
 

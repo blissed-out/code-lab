@@ -17,7 +17,7 @@ export const useProblemStore = create((set) => ({
 
       set({ problems: res.data.data });
     } catch (error) {
-      console.log("Error getting all problems: ", error);
+      console.error("Error getting all problems: ", error);
       toast.error("Error in getting problems");
     } finally {
       set({ isProblemsLoading: false });
@@ -33,7 +33,7 @@ export const useProblemStore = create((set) => ({
       set({ problem: res.data.data });
       toast.success(res.data.message);
     } catch (error) {
-      console.log("Error in getting all problems: ", error);
+      console.error("Error in getting all problems: ", error);
       toast.error("Error in getting problems");
     } finally {
       set({ isProblemLoading: false });
@@ -46,7 +46,7 @@ export const useProblemStore = create((set) => ({
 
       set({ solvedProblems: res.data.data.problem });
     } catch (error) {
-      console.log("Error in getting solved problems: ", error);
+      console.error("Error in getting solved problems: ", error);
       toast.error("Error getting solved problems");
     }
   },

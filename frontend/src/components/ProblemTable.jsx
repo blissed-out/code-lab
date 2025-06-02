@@ -56,13 +56,11 @@ const ProblemsTable = ({ problems }) => {
   }, [filteredProblems, currentPage]);
 
   const handleDelete = (id) => {
-    console.log("this is problem id to be deleted", id);
     onDeleteProblem(id);
   };
 
   const handleCreatePlaylist = async (data) => {
     await createPlaylist(data);
-    console.log("handleCreatePlyalist called ");
   };
 
   const handleAddToPlaylist = (problemId) => {

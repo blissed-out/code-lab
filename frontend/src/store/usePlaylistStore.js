@@ -16,7 +16,7 @@ export const usePlaylistStore = create((set, get) => ({
         playlistData,
       );
 
-      console.log("this is createPlaylist response: ", response);
+      console.error("this is createPlaylist response: ", response);
 
       set((state) => ({
         playlists: [...state.playlists, response.data.playList],
@@ -37,10 +37,6 @@ export const usePlaylistStore = create((set, get) => ({
     try {
       set({ isLoading: true });
       const response = await axiosInstance.get("/playlist");
-      console.log(
-        "this is response in getplaylists usePlaylistStore: ",
-        response,
-      );
       set({ playlists: response.data.data });
     } catch (error) {
       console.error("Error fetching playlists:", error);

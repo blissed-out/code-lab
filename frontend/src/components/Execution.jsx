@@ -89,7 +89,7 @@ const executionResults = ({ execution }) => {
               </thead>
               <tbody>
                 {execution.map((arr) => (
-                  <tr key={arr.id}>
+                  <tr key={arr.testCase}>
                     <td>
                       {arr.passed ? (
                         <div className="flex items-center gap-2 text-success">

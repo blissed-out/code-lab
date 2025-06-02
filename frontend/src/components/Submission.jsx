@@ -26,8 +26,6 @@ const SubmissionResults = ({ submission }) => {
   const totalTests = submission.testCase.length;
   const successRate = (passedTests / totalTests) * 100;
 
-  console.log("submission", submission);
-
   return (
     <div className="space-y-6">
       {/* Overall Status */}
