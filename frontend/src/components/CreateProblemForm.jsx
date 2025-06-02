@@ -115,61 +115,61 @@ const sampledpData = {
 * @return {number}
 */
 function climbStairs(n) {
-// Write your code here
+    // Write your code here
 }
 
 // Parse input and execute
 const readline = require('readline');
 const rl = readline.createInterface({
-input: process.stdin,
-output: process.stdout,
-terminal: false
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
 });
 
 rl.on('line', (line) => {
-const n = parseInt(line.trim());
-const result = climbStairs(n);
+    const n = parseInt(line.trim());
+    const result = climbStairs(n);
 
-console.log(result);
-rl.close();
+    console.log(result);
+    rl.close();
 });`,
     PYTHON: `class Solution:
-  def climbStairs(self, n: int) -> int:
-      # Write your code here
-      pass
+    def climbStairs(self, n: int) -> int:
+        # Write your code here
+        pass
 
 # Input parsing
 if __name__ == "__main__":
-  import sys
-  
-  # Parse input
-  n = int(sys.stdin.readline().strip())
-  
-  # Solve
-  sol = Solution()
-  result = sol.climbStairs(n)
-  
-  # Print result
-  print(result)`,
+    import sys
+    
+    # Parse input
+    n = int(sys.stdin.readline().strip())
+    
+    # Solve
+    sol = Solution()
+    result = sol.climbStairs(n)
+    
+    # Print result
+    print(result)`,
     JAVA: `import java.util.Scanner;
 
 class Main {
-  public int climbStairs(int n) {
-      // Write your code here
-      return 0;
-  }
+    public int climbStairs(int n) {
+        // Write your code here
+        return 0;
+    }
   
-  public static void main(String[] args) {
-      Scanner scanner = new Scanner(System.in);
-      int n = Integer.parseInt(scanner.nextLine().trim());
-      
-      // Use Main class instead of Solution
-      Main main = new Main();
-      int result = main.climbStairs(n);
-      
-      System.out.println(result);
-      scanner.close();
-  }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = Integer.parseInt(scanner.nextLine().trim());
+        
+        // Use Main class instead of Solution
+        Main main = new Main();
+        int result = main.climbStairs(n);
+        
+        System.out.println(result);
+        scanner.close();
+    }
 }`,
   },
   referenceSolutions: {
@@ -180,7 +180,7 @@ class Main {
 function climbStairs(n) {
 // Base cases
 if (n <= 2) {
-  return n;
+    return n;
 }
 
 // Dynamic programming approach
@@ -189,7 +189,7 @@ dp[1] = 1;
 dp[2] = 2;
 
 for (let i = 3; i <= n; i++) {
-  dp[i] = dp[i - 1] + dp[i - 2];
+    dp[i] = dp[i - 1] + dp[i - 2];
 }
 
 return dp[n];
@@ -199,9 +199,9 @@ let a = 1; // ways to climb 1 step
 let b = 2; // ways to climb 2 steps
 
 for (let i = 3; i <= n; i++) {
-  let temp = a + b;
-  a = b;
-  b = temp;
+    let temp = a + b;
+    a = b;
+    b = temp;
 }
 
 return n === 1 ? a : b;
@@ -211,100 +211,100 @@ return n === 1 ? a : b;
 // Parse input and execute
 const readline = require('readline');
 const rl = readline.createInterface({
-input: process.stdin,
-output: process.stdout,
-terminal: false
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
 });
 
 rl.on('line', (line) => {
-const n = parseInt(line.trim());
-const result = climbStairs(n);
+    const n = parseInt(line.trim());
+    const result = climbStairs(n);
 
-console.log(result);
-rl.close();
+    console.log(result);
+    rl.close();
 });`,
     PYTHON: `class Solution:
-  def climbStairs(self, n: int) -> int:
-      # Base cases
-      if n <= 2:
-          return n
-      
-      # Dynamic programming approach
-      dp = [0] * (n + 1)
-      dp[1] = 1
-      dp[2] = 2
-      
-      for i in range(3, n + 1):
-          dp[i] = dp[i - 1] + dp[i - 2]
-      
-      return dp[n]
-      
-      # Alternative approach with O(1) space
-      # a, b = 1, 2
-      # 
-      # for i in range(3, n + 1):
-      #     a, b = b, a + b
-      # 
-      # return a if n == 1 else b
+    def climbStairs(self, n: int) -> int:
+        # Base cases
+        if n <= 2:
+            return n
+        
+        # Dynamic programming approach
+        dp = [0] * (n + 1)
+        dp[1] = 1
+        dp[2] = 2
+        
+        for i in range(3, n + 1):
+            dp[i] = dp[i - 1] + dp[i - 2]
+        
+        return dp[n]
+        
+        # Alternative approach with O(1) space
+        # a, b = 1, 2
+        # 
+        # for i in range(3, n + 1):
+        #     a, b = b, a + b
+        # 
+        # return a if n == 1 else b
 
 # Input parsing
 if __name__ == "__main__":
-  import sys
-  
-  # Parse input
-  n = int(sys.stdin.readline().strip())
-  
-  # Solve
-  sol = Solution()
-  result = sol.climbStairs(n)
-  
-  # Print result
-  print(result)`,
+    import sys
+    
+    # Parse input
+    n = int(sys.stdin.readline().strip())
+    
+    # Solve
+    sol = Solution()
+    result = sol.climbStairs(n)
+    
+    # Print result
+    print(result)`,
     JAVA: `import java.util.Scanner;
 
 class Main {
-  public int climbStairs(int n) {
-      // Base cases
-      if (n <= 2) {
-          return n;
-      }
-      
-      // Dynamic programming approach
-      int[] dp = new int[n + 1];
-      dp[1] = 1;
-      dp[2] = 2;
-      
-      for (int i = 3; i <= n; i++) {
-          dp[i] = dp[i - 1] + dp[i - 2];
-      }
-      
-      return dp[n];
-      
-      /* Alternative approach with O(1) space
-      int a = 1; // ways to climb 1 step
-      int b = 2; // ways to climb 2 steps
-      
-      for (int i = 3; i <= n; i++) {
-          int temp = a + b;
-          a = b;
-          b = temp;
-      }
-      
-      return n == 1 ? a : b;
-      */
-  }
+    public int climbStairs(int n) {
+        // Base cases
+        if (n <= 2) {
+            return n;
+        }
+        
+        // Dynamic programming approach
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+        dp[2] = 2;
+        
+        for (int i = 3; i <= n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        
+        return dp[n];
+        
+        /* Alternative approach with O(1) space
+        int a = 1; // ways to climb 1 step
+        int b = 2; // ways to climb 2 steps
+        
+        for (int i = 3; i <= n; i++) {
+            int temp = a + b;
+            a = b;
+            b = temp;
+        }
+        
+        return n == 1 ? a : b;
+        */
+    }
   
-  public static void main(String[] args) {
-      Scanner scanner = new Scanner(System.in);
-      int n = Integer.parseInt(scanner.nextLine().trim());
-      
-      // Use Main class instead of Solution
-      Main main = new Main();
-      int result = main.climbStairs(n);
-      
-      System.out.println(result);
-      scanner.close();
-  }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int n = Integer.parseInt(scanner.nextLine().trim());
+        
+        // Use Main class instead of Solution
+        Main main = new Main();
+        int result = main.climbStairs(n);
+        
+        System.out.println(result);
+        scanner.close();
+    }
 }`,
   },
 };
@@ -355,48 +355,49 @@ const sampleStringProblem = {
   },
   codeSnippets: {
     JAVASCRIPT: `/**
-   * @param {string} s
-   * @return {boolean}
-   */
-  function isPalindrome(s) {
+* @param {string} s
+* @return {boolean}
+*/
+function isPalindrome(s) {
     // Write your code here
-  }
+}
   
-  // Add readline for dynamic input handling
-  const readline = require('readline');
-  const rl = readline.createInterface({
+// Add readline for dynamic input handling
+const readline = require('readline');
+const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     terminal: false
-  });
-  
-  // Process input line
-  rl.on('line', (line) => {
+});
+
+// Process input line
+rl.on('line', (line) => {
     // Call solution with the input string
     const result = isPalindrome(line);
     
     // Output the result
     console.log(result ? "true" : "false");
     rl.close();
-  });`,
+});`,
     PYTHON: `class Solution:
-      def isPalindrome(self, s: str) -> bool:
-          # Write your code here
-          pass
+def isPalindrome(self, s: str) -> bool:
+    # Write your code here
+    pass
   
-  # Input parsing
-  if __name__ == "__main__":
-      import sys
-      # Read the input string
-      s = sys.stdin.readline().strip()
-      
-      # Call solution
-      sol = Solution()
-      result = sol.isPalindrome(s)
-      
-      # Output result
-      print(str(result).lower())  # Convert True/False to lowercase true/false`,
-    JAVA: `import java.util.Scanner;
+# Input parsing
+if __name__ == "__main__":
+    import sys
+    # Read the input string
+    s = sys.stdin.readline().strip()
+    
+    # Call solution
+    sol = Solution()
+    result = sol.isPalindrome(s)
+    
+    # Output result
+    print(str(result).lower())  # Convert True/False to lowercase true/false`,
+    JAVA: `
+import java.util.Scanner;
 
 public class Main {
     public static String preprocess(String s) {
@@ -419,65 +420,65 @@ public class Main {
   },
   referenceSolutions: {
     JAVASCRIPT: `/**
-   * @param {string} s
-   * @return {boolean}
-   */
-  function isPalindrome(s) {
+ * @param {string} s
+ * @return {boolean}
+ */
+function isPalindrome(s) {
     // Convert to lowercase and remove non-alphanumeric characters
     s = s.toLowerCase().replace(/[^a-z0-9]/g, '');
-    
+  
     // Check if it's a palindrome
     let left = 0;
     let right = s.length - 1;
-    
-    while (left < right) {
-      if (s[left] !== s[right]) {
-        return false;
-      }
-      left++;
-      right--;
-    }
-    
-    return true;
-  }
   
-  // Add readline for dynamic input handling
-  const readline = require('readline');
-  const rl = readline.createInterface({
+    while (left < right) {
+        if (s[left] !== s[right]) {
+            return false;
+        }
+        left++;
+        right--;
+    }
+  
+    return true;
+}
+  
+// Add readline for dynamic input handling
+const readline = require('readline');
+const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
     terminal: false
-  });
+});
   
-  // Process input line
-  rl.on('line', (line) => {
+// Process input line
+rl.on('line', (line) => {
     // Call solution with the input string
     const result = isPalindrome(line);
-    
+
     // Output the result
     console.log(result ? "true" : "false");
     rl.close();
-  });`,
+});`,
     PYTHON: `class Solution:
-      def isPalindrome(self, s: str) -> bool:
-          # Convert to lowercase and keep only alphanumeric characters
-          filtered_chars = [c.lower() for c in s if c.isalnum()]
-          
-          # Check if it's a palindrome
-          return filtered_chars == filtered_chars[::-1]
+    def isPalindrome(self, s: str) -> bool:
+        # Convert to lowercase and keep only alphanumeric characters
+        filtered_chars = [c.lower() for c in s if c.isalnum()]
+              
+        # Check if it's a palindrome
+        return filtered_chars == filtered_chars[::-1]
   
-  # Input parsing
-  if __name__ == "__main__":
-      import sys
-      # Read the input string
-      s = sys.stdin.readline().strip()
+# Input parsing
+if __name__ == "__main__":
+    import sys
+    # Read the input string
+    s = sys.stdin.readline().strip()
       
-      # Call solution
-      sol = Solution()
-      result = sol.isPalindrome(s)
+    # Call solution
+    sol = Solution()
+    result = sol.isPalindrome(s)
       
-      # Output result
-      print(str(result).lower())  # Convert True/False to lowercase true/false`,
+    # Output result
+    print(str(result).lower())  # Convert True/False to lowercase true/false`,
     JAVA: `import java.util.Scanner;
 
 public class Main {

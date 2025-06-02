@@ -15,7 +15,7 @@ export const useAuthStore = create((set) => ({
 
       set({ authUser: res.data.data });
     } catch (error) {
-      console.error("❌ Error checking auth:", error);
+      console.error("Error checking auth:", error);
       set({ authUser: null });
     } finally {
       set({ isCheckingAuth: false });
@@ -48,7 +48,11 @@ export const useAuthStore = create((set) => ({
       toast.success(res.data.message);
     } catch (error) {
       console.error("Error logging in", error);
-      toast.error("Error logging in");
+
+      const message =
+        error.response?.data?.message ||
+        "Something went wrong. Please try again later.";
+      toast.error(message);
     } finally {
       set({ isLoggingIn: false });
     }
