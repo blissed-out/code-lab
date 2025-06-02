@@ -6,6 +6,7 @@ import ApiResponse from "../utils/api-response.js";
 import jwt from "jsonwebtoken";
 import crypto from "node:crypto";
 import { sendEmailToUser } from "../utils/mail.js";
+import ApiError from "../utils/api-error.js";
 
 export const register = asyncHandler(async (req, res) => {
   const { email, name, password } = req.body;
@@ -21,9 +22,7 @@ export const register = asyncHandler(async (req, res) => {
       email: existingUser.email,
     };
 
-    return res
-      .status(409)
-      .json(new ApiResponse(409, null, "Email already registered"));
+    throw new ApiError(409, "Email already registered");
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -76,11 +75,7 @@ export const login = asyncHandler(async (req, res) => {
   });
 
   if (!existingUser) {
-    return res
-      .status(401)
-      .json(new ApiResponse(404, email, "Invalid credentials"));
-    {
-    }
+    throw new ApiError(401, "User not registered");
   }
 
   const hashedPassword = existingUser.password;
@@ -88,9 +83,7 @@ export const login = asyncHandler(async (req, res) => {
   const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
 
   if (!isPasswordCorrect) {
-    return res
-      .status(401)
-      .json(new ApiResponse(401, email, "Incorrect credentials"));
+    throw new ApiError(401, "Invalid credentials");
   }
 
   const token = jwt.sign(
@@ -139,7 +132,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   const { token } = req.params;
 
   if (!token) {
-    return res.status(400).json(new ApiResponse(400, null, "Invalid token"));
+    throw new ApiError(401, "Invalid token");
   }
 
   const user = await db.user.findUnique({
@@ -156,7 +149,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    return res.status(403).json(new ApiResponse(403, null, "Invalid token"));
+    throw new ApiError(401, "Invalid token");
   }
 
   // check token expiration
@@ -164,11 +157,11 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   const expiryTime = Number(user.tokenExpiry);
 
   if (expiryTime <= Date.now()) {
-    return res.status(401).json(new ApiResponse(401, null, "Token expired"));
+    throw new ApiError(401, "Token expired");
   }
 
   if (token !== user.emailToken) {
-    return res.status(401).json(new ApiResponse(403, null, "Invalid token"));
+    throw new ApiError(401, "Invalid token");
   }
 
   await db.user.update({
@@ -223,19 +216,13 @@ export const sendResetPassword = asyncHandler(async (req, res) => {
     },
   });
 
-  console.log("this is user found in sendResetPassword: ", user);
-
   if (!user) {
-    return res
-      .status(403)
-      .json(new ApiResponse(403, null, "User not registered"));
+    throw new ApiError(401, "Email not registered");
   }
 
   // generate token
   const token = crypto.randomBytes(32).toString("hex");
   const expiryTime = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
-
-  console.log(`Token: ${token}, expiryTime: ${expiryTime}`);
 
   // set token in db with expiry time
   await db.user.create({
@@ -267,10 +254,8 @@ export const resetPassword = asyncHandler(async (req, res) => {
 
   const { token } = req.parmas;
 
-  console.log("token comming from resetPassword (after mail): ", token);
-
   if (!token) {
-    return res.status(400).json(new ApiResponse(400, null, "Invalid token"));
+    throw new ApiError(401, "Invalid token");
   }
 
   // check if token exists in db
@@ -285,29 +270,23 @@ export const resetPassword = asyncHandler(async (req, res) => {
     },
   });
 
-  console.log("user in resetPassword controller: ", user);
-
   if (!user) {
-    return res.status(403).json(new ApiResponse(403, null, "Invalid token"));
+    throw new ApiError(401, "Invalid token");
   }
 
   // check expiryTime
   if (user.passwordTokenExpiry <= Date.now()) {
-    return res.status(403).json(new ApiResponse(403, null, "Token Expired"));
+    throw new ApiError(401, "Token Expired");
   }
 
   // allow user to set new password
   const { newPassword, confirmPassword } = req.body;
 
   if (newPassword != confirmPassword) {
-    return res
-      .status(403)
-      .json(new ApiResponse(403, null, "password not matched"));
+    throw new ApiError(401, "Invalid Credentials");
   }
 
   const hashedPassword = await bcrypt.hash(confirmPassword, 10);
-
-  console.log("hashedPassword in reset password controller", hashedPassword);
 
   await db.user.update({
     where: {
