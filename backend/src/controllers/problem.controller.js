@@ -93,7 +93,15 @@ export const createProblem = asyncHandler(async (req, res) => {
 });
 
 export const getAllProblems = asyncHandler(async (req, res) => {
-  const problem = await db.problem.findMany();
+  const problem = await db.problem.findMany({
+    include: {
+      solvedBy: {
+        where: {
+          userId: req.user.id,
+        },
+      },
+    },
+  });
 
   if (!problem) {
     return res.status(401).json(new ApiResponse(401, null, "No Problem found"));
@@ -241,6 +249,8 @@ export const deleteProblem = asyncHandler(async (req, res) => {
       .status(404)
       .json(new ApiResponse(404, null, "problem not found"));
   }
+
+  console.log("this is delete problem id", id);
 
   await db.problem.delete({
     where: { id },

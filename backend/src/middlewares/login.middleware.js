@@ -34,7 +34,7 @@ export const isLoggedIn = asyncHandler(async (req, res, next) => {
   });
 
   if (!user) {
-    return res.status(404).json(new ApiResponse(404, null, "user not found"));
+    return res.status(404).json(new ApiResponse(401, null, "user not found"));
   }
 
   // req.user = user;

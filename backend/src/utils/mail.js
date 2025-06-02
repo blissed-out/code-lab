@@ -15,9 +15,7 @@ const mailGenerator = new Mailgen({
   },
 });
 
-export const sendEmailToUser = async (token) => {
-  const userEmailVerificationURL = `${process.env.HOST}:${process.env.PORT}/api/v1/auth/verifyEmail/${token}`;
-
+export const sendEmailToUser = async (URL) => {
   const email = {
     body: {
       name: "Hello Code Lab ",
@@ -27,7 +25,7 @@ export const sendEmailToUser = async (token) => {
         button: {
           color: "#22BC66", // Optional action button color
           text: "Confirm your account",
-          link: userEmailVerificationURL,
+          link: URL,
         },
       },
       outro:

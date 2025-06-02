@@ -31,7 +31,8 @@ export const register = asyncHandler(async (req, res) => {
   const token = crypto.randomBytes(32).toString("hex");
 
   // send mail to user
-  await sendEmailToUser(token);
+  const userEmailVerificationURL = `${process.env.HOST}:${process.env.PORT}/api/v1/auth/verifyEmail/${token}`;
+  await sendEmailToUser(userEmailVerificationURL);
 
   const expiryTime = Date.now() + 7 * 24 * 60 * 60 * 1000; // 7 days
 
@@ -62,6 +63,15 @@ export const login = asyncHandler(async (req, res) => {
   const existingUser = await db.user.findUnique({
     where: {
       email,
+    },
+
+    select: {
+      id: true,
+      email: true,
+      name: true,
+      image: true,
+      role: true,
+      password: true,
     },
   });
 
@@ -99,12 +109,14 @@ export const login = asyncHandler(async (req, res) => {
 
   res.cookie("token", token, cookieOption);
 
-  const data = {
+  const user = {
     name: existingUser.name,
     email: existingUser.email,
+    image: existingUser.image,
+    role: existingUser.role,
   };
 
-  res.status(200).json(new ApiResponse(200, data, "Login successfully"));
+  res.status(200).json(new ApiResponse(200, user, "Login successfully"));
 });
 
 export const logout = (req, res) => {
@@ -182,10 +194,132 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
 export const check = asyncHandler(async (req, res) => {
   const data = {
-    user: user.req.user,
+    ...req.user,
   };
 
   res
     .status(200)
-    .json(new ApiResponse(200, data, "User authentication successfull"));
+    .json(new ApiResponse(200, data, "User authentication successful"));
+});
+
+export const sendResetPassword = asyncHandler(async (req, res) => {
+  // get email from user
+  // check if user existingUser
+  // generate token
+  // send password reset link to user's email
+  // save token in db
+
+  const { email } = req.body;
+
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+
+    select: {
+      email: true,
+    },
+  });
+
+  console.log("this is user found in sendResetPassword: ", user);
+
+  if (!user) {
+    return res
+      .status(403)
+      .json(new ApiResponse(403, null, "User not registered"));
+  }
+
+  // generate token
+  const token = crypto.randomBytes(32).toString("hex");
+  const expiryTime = Date.now() + 1 * 60 * 60 * 1000; // 1 hour
+
+  console.log(`Token: ${token}, expiryTime: ${expiryTime}`);
+
+  // set token in db with expiry time
+  await db.user.create({
+    where: {
+      email,
+    },
+
+    data: {
+      passwordToken: token,
+      passwordTokenExpiry: expiryTime,
+    },
+  });
+
+  // email the reset password link
+  const passwordResetURL = `${process.env.HOST}:${process.env.PORT}/api/v1/auth/reset-password/${token}`;
+  await sendEmailToUser(passwordResetURL);
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, email, "reset password link send successfully"));
+});
+
+export const resetPassword = asyncHandler(async (req, res) => {
+  // get token from url
+  // validate token (existance, expiryTime)
+  // allow user to reset passsword
+  // save the password
+  // remove password token and tokenExpiry to null
+
+  const { token } = req.parmas;
+
+  console.log("token comming from resetPassword (after mail): ", token);
+
+  if (!token) {
+    return res.status(400).json(new ApiResponse(400, null, "Invalid token"));
+  }
+
+  // check if token exists in db
+  const user = await db.user.findUnique({
+    where: {
+      passwordToken: token,
+    },
+
+    select: {
+      email: true,
+      passwordTokenExpiry: true,
+    },
+  });
+
+  console.log("user in resetPassword controller: ", user);
+
+  if (!user) {
+    return res.status(403).json(new ApiResponse(403, null, "Invalid token"));
+  }
+
+  // check expiryTime
+  if (user.passwordTokenExpiry <= Date.now()) {
+    return res.status(403).json(new ApiResponse(403, null, "Token Expired"));
+  }
+
+  // allow user to set new password
+  const { newPassword, confirmPassword } = req.body;
+
+  if (newPassword != confirmPassword) {
+    return res
+      .status(403)
+      .json(new ApiResponse(403, null, "password not matched"));
+  }
+
+  const hashedPassword = await bcrypt.hash(confirmPassword, 10);
+
+  console.log("hashedPassword in reset password controller", hashedPassword);
+
+  await db.user.update({
+    where: {
+      email: user.email,
+    },
+
+    data: {
+      password: hashedPassword,
+      passwordToken: null,
+      passwordTokenExpiry: null,
+    },
+  });
+
+  res
+    .status(200)
+    .json(new ApiResponse(200, user.email, "Password reset succssful"));
 });

@@ -22,7 +22,7 @@ export const createPlaylist = asyncHandler(async (req, res) => {
 });
 
 export const getAllListDetails = asyncHandler(async (req, res) => {
-  const userId = req.body.id;
+  const userId = req.user.id;
 
   const playlistName = await db.playlist.findMany({
     where: { userId: userId },

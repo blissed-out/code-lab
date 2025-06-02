@@ -1,13 +1,13 @@
 import { body } from "express-validator";
 
-const registrationValidation = () => {
+export const registrationValidation = () => {
   return [
     body("email")
       .trim()
       .notEmpty()
       .withMessage("email field is required")
       .isEmail()
-      .withMessage("invalid email"),
+      .withMessage("Invalid email"),
 
     body("name")
       .trim()
@@ -28,14 +28,14 @@ const registrationValidation = () => {
   ];
 };
 
-const loginValidation = () => {
+export const loginValidation = () => {
   return [
     body("email")
       .trim()
       .notEmpty()
       .withMessage("email field is required")
       .isEmail()
-      .withMessage("invalid email"),
+      .withMessage("Invalid email"),
 
     body("password")
       .trim()
@@ -47,4 +47,13 @@ const loginValidation = () => {
   ];
 };
 
-export { registrationValidation, loginValidation };
+export const resetPasswordValidation = () => {
+  return [
+    body("email")
+      .trim()
+      .notEmpty()
+      .withMessage("email field is required")
+      .isEmail()
+      .withMessage("Invalid email"),
+  ];
+};

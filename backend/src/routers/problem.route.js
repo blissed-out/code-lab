@@ -9,18 +9,18 @@ import {
   getAllSolvedProblemsByUser,
 } from "../controllers/problem.controller.js";
 
-const authRoute = Router();
+const problemRoute = Router();
 
-authRoute.post("/create-problem", isLoggedIn, isAdmin, createProblem);
+problemRoute.post("/create-problem", isLoggedIn, isAdmin, createProblem);
 
-authRoute.get("/get-all-problems", isLoggedIn, getAllProblems);
+problemRoute.get("/get-all-problems", isLoggedIn, getAllProblems);
 
-authRoute.get("/get-problem/:id", isLoggedIn, getProblemById);
+problemRoute.get("/get-problem/:id", isLoggedIn, getProblemById);
 
-authRoute.post("/update-problem/:id", isLoggedIn, isAdmin, updateProblem);
+problemRoute.post("/update-problem/:id", isLoggedIn, isAdmin, updateProblem);
 
-authRoute.delete("/delete-problem/:id", isLoggedIn, isAdmin, deleteProblem);
+problemRoute.delete("/delete-problem/:id", isLoggedIn, isAdmin, deleteProblem);
 
-authRoute.get("/get-solved-problem", isLoggedIn, getAllSolvedProblemsByUser);
+problemRoute.get("/get-solved-problem", isLoggedIn, getAllSolvedProblemsByUser);
 
-export default authRoute;
+export default problemRoute;

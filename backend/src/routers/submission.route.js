@@ -3,21 +3,24 @@ import { isLoggedIn } from "../middlewares/login.middleware.js";
 import {
   getAllSubmission,
   getAllTheSubmissionsForProblem,
-  getSubmissionForProblem,
+  getSubmissionsForProblem,
+  submitCode,
 } from "../controllers/submission.controller.js";
 
 const submissionRoute = Router();
 
-submissionRoute.get("/get-all-submission", isLoggedIn, getAllSubmission);
+submissionRoute.post("/submit-code", isLoggedIn, submitCode);
+
+submissionRoute.get("/get-all-submissions", isLoggedIn, getAllSubmission);
 
 submissionRoute.get(
   "/get-submission/:problemId",
   isLoggedIn,
-  getSubmissionForProblem,
+  getSubmissionsForProblem,
 );
 
 submissionRoute.get(
-  "/get-submission-count/:problemId",
+  "/get-submissions-count/:problemId",
   isLoggedIn,
   getAllTheSubmissionsForProblem,
 );
