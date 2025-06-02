@@ -28,8 +28,6 @@ import SubmissionsList from "../components/SubmissionList";
 const ProblemPage = () => {
   const { id } = useParams();
 
-  console.log("ProblemPage rendered with id:", id);
-
   const { getProblemById, problem, isProblemLoading } = useProblemStore();
 
   const {
@@ -105,6 +103,7 @@ const ProblemPage = () => {
       runCode(code, language_id, stdin, expected_outputs, id);
     } catch (error) {
       console.error("Error in handRunCode: ", error);
+      toast.message("Something went wrong, please try again later.");
     }
   };
 
