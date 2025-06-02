@@ -6,6 +6,7 @@ import {
 } from "../libs/judge0.lib.js";
 import ApiResponse from "../utils/api-response.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import ApiError from "../utils/api-error.js";
 
 export const executeCode = asyncHandler(async (req, res) => {
   const { source_code, language_id, stdin, expected_outputs } = req.body;
@@ -18,9 +19,7 @@ export const executeCode = asyncHandler(async (req, res) => {
     !Array.isArray(expected_outputs) ||
     expected_outputs.length !== stdin.length
   ) {
-    return res
-      .status(400)
-      .json(new ApiResponse(400, null, "Invalid or missing test cases"));
+    throw new ApiError(400, "Invalid or missing test cases");
   }
 
   // prepare each test cases for judge0 submissions
