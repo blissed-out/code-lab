@@ -7,6 +7,7 @@ import {
 import ApiResponse from "../utils/api-response.js";
 import { db } from "../libs/db.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import ApiError from "../utils/api-error.js";
 
 export const submitCode = asyncHandler(async (req, res) => {
   const { source_code, language_id, stdin, expected_outputs, problemId } =
@@ -23,6 +24,15 @@ export const submitCode = asyncHandler(async (req, res) => {
     expected_outputs.length !== stdin.length
   ) {
     throw new ApiError(400, "Invalid or missing test cases");
+  }
+
+  // check if problem exists
+  const problem = await db.problem.findUnique({
+    where: { id: problemId },
+  });
+
+  if (!problem) {
+    throw new ApiError(404, "Problem not found");
   }
 
   // prepare each test cases for judge0 submissions
@@ -169,12 +179,25 @@ export const getAllSubmission = asyncHandler(async (req, res) => {
 export const getSubmissionsForProblem = asyncHandler(async (req, res) => {
   const userId = req.user.id;
   const problemId = req.params.problemId;
+
+  const problem = await db.problem.findUnique({
+    where: { id: problemId },
+  });
+
+  if (!problem) {
+    throw new ApiError(404, "Problem not found");
+  }
+
   const submissions = await db.submission.findMany({
     where: {
       userId: userId,
       problemId: problemId,
     },
   });
+
+  if (!submissions || submissions.length === 0) {
+    throw new ApiError(404, "No submissions found for this problem");
+  }
 
   res
     .status(200)
