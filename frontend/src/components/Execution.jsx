@@ -26,6 +26,7 @@ const executionResults = ({ execution }) => {
   const passedTests = execution.filter((arr) => arr.passed == true).length;
   const totalTests = execution.length;
   const successRate = (passedTests / totalTests) * 100;
+  const executionStatus = successRate === 100 ? "Accepted" : "Failed";
 
   return (
     <div className="space-y-6">
@@ -39,7 +40,7 @@ const executionResults = ({ execution }) => {
                 execution.status === "Accepted" ? "text-success" : "text-error"
               }`}
             >
-              {execution.status}
+              {executionStatus}
             </div>
           </div>
         </div>
