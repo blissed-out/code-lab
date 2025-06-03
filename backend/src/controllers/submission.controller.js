@@ -195,10 +195,6 @@ export const getSubmissionsForProblem = asyncHandler(async (req, res) => {
     },
   });
 
-  if (!submissions || submissions.length === 0) {
-    throw new ApiError(404, "No submissions found for this problem");
-  }
-
   res
     .status(200)
     .json(new ApiResponse(200, submissions, "submission fetched succsfully"));
