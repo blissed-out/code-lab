@@ -22,9 +22,11 @@ const SubmissionResults = ({ submission }) => {
       .map((t) => parseFloat(t)) // remove ' s' using parseFloat
       .reduce((a, b) => a + b, 0) / timeArr.length;
 
-  const passedTests = submission.testCase.filter((tc) => tc.passed).length;
-  const totalTests = submission.testCase.length;
-  const successRate = (passedTests / totalTests) * 100;
+  const testCases = submission?.testCase ?? [];
+  const passedTests = testCases.filter((tc) => tc.passed).length;
+  const totalTests = testCases.length;
+  const successRate = totalTests > 0 ? (passedTests / totalTests) * 100 : 0;
+  const submissionStatus = successRate === 100 ? "Accepted" : "Failed";
 
   return (
     <div className="space-y-6">
@@ -38,7 +40,7 @@ const SubmissionResults = ({ submission }) => {
                 submission.status === "Accepted" ? "text-success" : "text-error"
               }`}
             >
-              {submission.status}
+              {submissionStatus}
             </div>
           </div>
         </div>

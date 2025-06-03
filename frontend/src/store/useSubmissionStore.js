@@ -10,8 +10,8 @@ export const useSubmissionStore = create((set, get) => ({
 
   loading: {
     submitCode: false,
-    getAllSubmissions: false,
-    getSubmissionForProblem: false,
+    allSubmissionsForProblem: false,
+    allSubmissionsOfUser: false,
   },
 
   submitCode: async (
@@ -56,8 +56,10 @@ export const useSubmissionStore = create((set, get) => ({
   getAllSubmissions: async () => {
     try {
       set((state) => ({
-        ...state.loading,
-        getAllSubmissions: true,
+        loading: {
+          ...state.loading,
+          getAllSubmissions: true,
+        },
       }));
       const res = await axiosInstance.get("/submission/get-all-submissions");
 
@@ -69,8 +71,10 @@ export const useSubmissionStore = create((set, get) => ({
       toast.error("Error getting all submissions");
     } finally {
       set((state) => ({
-        ...state.loading,
-        getAllSubmissions: false,
+        loading: {
+          ...state.loading,
+          getAllSubmissions: false,
+        },
       }));
     }
   },
@@ -78,8 +82,10 @@ export const useSubmissionStore = create((set, get) => ({
   getSubmissionsForProblem: async (problemId) => {
     try {
       set((state) => ({
-        ...state.loading,
-        getSubmissionsForProblem: true,
+        loading: {
+          ...state.loading,
+          getSubmissionsForProblem: true,
+        },
       }));
 
       const res = await axiosInstance.get(
@@ -93,8 +99,10 @@ export const useSubmissionStore = create((set, get) => ({
       toast.error("Error getting submissions for problem");
     } finally {
       set((state) => ({
-        ...state.loading,
-        getSubmissionsForProblem: true,
+        loading: {
+          ...state.loading,
+          getSubmissionsForProblem: true,
+        },
       }));
     }
   },

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Editor from "@monaco-editor/react";
 import {
   Play,
@@ -31,10 +31,12 @@ const ProblemPage = () => {
   const { getProblemById, problem, isProblemLoading } = useProblemStore();
 
   const {
-    submission: submissions,
-    isLoading: isSubmissionsLoading,
-    getSubmissionForProblem,
+    latestSubmissionForProblem,
     getSubmissionCountForProblem,
+    getSubmissionsForProblem,
+    submitCode,
+    allSubmissionsForProblem,
+    loading,
     submissionCount,
   } = useSubmissionStore();
 
@@ -44,8 +46,7 @@ const ProblemPage = () => {
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [testcases, setTestCases] = useState([]);
 
-  const { submitCode, submission, runCode, execution, isExecuting } =
-    useExecutionStore();
+  const { runCode, execution, isExecuting } = useExecutionStore();
 
   useEffect(() => {
     getProblemById(id);
@@ -56,7 +57,7 @@ const ProblemPage = () => {
     if (problem) {
       setCode(
         problem.codeSnippets?.[selectedLanguage] ||
-          submission?.sourceCode ||
+          latestSubmissionForProblem?.sourceCode ||
           "",
       );
       setTestCases(
@@ -70,7 +71,7 @@ const ProblemPage = () => {
 
   useEffect(() => {
     if (activeTab === "submissions" && id) {
-      getSubmissionForProblem(id);
+      getSubmissionsForProblem(id);
     }
   }, [activeTab, id]);
 
@@ -181,8 +182,8 @@ const ProblemPage = () => {
       case "submissions":
         return (
           <SubmissionsList
-            submissions={submissions}
-            isLoading={isSubmissionsLoading}
+            submissions={allSubmissionsForProblem}
+            isLoading={loading.allSubmissionsForProblem}
           />
         );
       case "discussion":
@@ -354,10 +355,15 @@ const ProblemPage = () => {
                     {!isExecuting && <Play className="w-4 h-4" />}
                     Run Code
                   </button>
+
                   <button
-                    className="btn btn-success gap-2"
+                    className={`btn btn-success gap-2 ${
+                      loading.submitCode ? "loading" : ""
+                    }`}
                     onClick={handleSubmitCode}
+                    disabled={loading.submitCode}
                   >
+                    {!loading.submitCode && <Play className="w-4 h-4" />}
                     Submit Code
                   </button>
                 </div>
@@ -370,8 +376,8 @@ const ProblemPage = () => {
           <div className="card-body">
             {execution ? (
               <Execution execution={execution} />
-            ) : submission ? (
-              <Submission submission={submission} />
+            ) : latestSubmissionForProblem ? (
+              <Submission submission={latestSubmissionForProblem} />
             ) : (
               <>
                 <div className="flex items-center justify-between mb-6">
