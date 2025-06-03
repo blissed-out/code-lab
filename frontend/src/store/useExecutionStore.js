@@ -19,7 +19,8 @@ export const useExecutionStore = create((set) => ({
 
       set({ execution: res.data.data });
     } catch (error) {
-      console.error("error huh");
+      console.error("Error executing code:", error);
+      toast.error("Failed to execute code. Please try again.");
     } finally {
       set({ isExecuting: false });
     }
