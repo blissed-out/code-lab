@@ -97,11 +97,9 @@ const ProblemPage = () => {
     e.preventDefault();
     try {
       const language_id = getLanguageId(selectedLanguage);
-      const stdin = problem.testcases.map((tc) => {
-        tc.input;
-      });
+      const stdin = problem.testcases.map((tc) => tc.input);
       const expected_outputs = problem.testcases.map((tc) => tc.output);
-      runCode(code, language_id, stdin, expected_outputs, id);
+      runCode(code, language_id, stdin, expected_outputs);
     } catch (error) {
       console.error("Error in handRunCode: ", error);
       toast.message("Something went wrong, please try again later.");
@@ -350,7 +348,7 @@ const ProblemPage = () => {
                       isExecuting ? "loading" : ""
                     }`}
                     onClick={handleRunCode}
-                    disabled={isExecuting}
+                    disabled={isExecuting || loading.submitCode}
                   >
                     {!isExecuting && <Play className="w-4 h-4" />}
                     Run Code
@@ -361,7 +359,7 @@ const ProblemPage = () => {
                       loading.submitCode ? "loading" : ""
                     }`}
                     onClick={handleSubmitCode}
-                    disabled={loading.submitCode}
+                    disabled={isExecuting || loading.submitCode}
                   >
                     {!loading.submitCode && <Play className="w-4 h-4" />}
                     Submit Code
