@@ -202,6 +202,7 @@ export const getSubmissionsForProblem = asyncHandler(async (req, res) => {
 
 export const getAllTheSubmissionsForProblem = asyncHandler(async (req, res) => {
   const { problemId } = req.params;
+  const userId = req.user.id;
 
   const problem = await db.problem.findUnique({
     where: { id: problemId },
@@ -211,9 +212,12 @@ export const getAllTheSubmissionsForProblem = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Problem not found");
   }
 
-  const submissionCount = await db.submission.count({
-    where: { problemId },
+  const submissions = await db.submission.groupBy({
+    by: ["userId"],
+    where: { problemId: problemId },
   });
+
+  const submissionCount = submissions.length;
 
   res
     .status(200)
