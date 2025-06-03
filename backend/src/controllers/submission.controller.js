@@ -206,13 +206,22 @@ export const getSubmissionsForProblem = asyncHandler(async (req, res) => {
 
 export const getAllTheSubmissionsForProblem = asyncHandler(async (req, res) => {
   const { problemId } = req.params;
-  const userId = req.user.id;
 
-  const submissions = await db.submission.findMany({
-    where: { userId, problemId },
+  const problem = await db.problem.findUnique({
+    where: { id: problemId },
+  });
+
+  if (!problem) {
+    throw new ApiError(404, "Problem not found");
+  }
+
+  const submissionCount = await db.submission.count({
+    where: { problemId },
   });
 
   res
     .status(200)
-    .json(new ApiResponse(200, submissions, "submissions fetched succsfully"));
+    .json(
+      new ApiResponse(200, submissionCount, "submissions fetched succsfully"),
+    );
 });
