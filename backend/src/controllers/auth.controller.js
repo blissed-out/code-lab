@@ -192,6 +192,10 @@ export const check = asyncHandler(async (req, res) => {
     ...req.user,
   };
 
+  if (!data) {
+    throw new ApiError(401, "User not authenticated");
+  }
+
   res
     .status(200)
     .json(new ApiResponse(200, data, "User authentication successful"));
