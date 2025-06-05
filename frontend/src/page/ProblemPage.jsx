@@ -38,6 +38,8 @@ const ProblemPage = () => {
     allSubmissionsForProblem,
     loading,
     submissionCount,
+    getSolvedSubmissions,
+    solvedSubmissionsCount,
   } = useSubmissionStore();
 
   const [code, setCode] = useState("");
@@ -49,15 +51,22 @@ const ProblemPage = () => {
   const { runCode, execution, isExecuting } = useExecutionStore();
 
   useEffect(() => {
+    getSolvedSubmissions(id);
+    getSubmissionsForProblem(id);
+  }, [id]);
+
+  useEffect(() => {
     getProblemById(id);
     getSubmissionCountForProblem(id);
+    console.log("allSubmissionsForProblem", allSubmissionsForProblem);
   }, [id]);
 
   useEffect(() => {
     if (problem) {
       setCode(
-        problem.codeSnippets?.[selectedLanguage] ||
-          latestSubmissionForProblem?.sourceCode ||
+        allSubmissionsForProblem[allSubmissionsForProblem.length - 1]
+          ?.sourceCode ||
+          problem.codeSnippets?.[selectedLanguage] ||
           "",
       );
       setTestCases(
@@ -236,7 +245,12 @@ const ProblemPage = () => {
               <span>{submissionCount ?? 0} Submissions</span>
               <span className="text-base-content/30">•</span>
               <ThumbsUp className="w-4 h-4" />
-              <span>95% Success Rate</span>
+              <span>
+                {solvedSubmissionsCount
+                  ? (solvedSubmissionsCount / submissionCount) * 100
+                  : 0}
+                % Success Rate
+              </span>
             </div>
           </div>
         </div>
@@ -331,7 +345,7 @@ const ProblemPage = () => {
                   onChange={(value) => setCode(value || "")}
                   options={{
                     minimap: { enabled: false },
-                    fontSize: 20,
+                    fontSize: 14,
                     lineNumbers: "on",
                     roundedSelection: false,
                     scrollBeyondLastLine: false,

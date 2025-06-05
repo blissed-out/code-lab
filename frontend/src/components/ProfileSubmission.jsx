@@ -66,7 +66,7 @@ const ProfileSubmission = () => {
             My Submissions
           </h1>
 
-          <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <div className="flex flex-col sm:flex-row gap-6 items-center w-full md:w-auto">
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-outline gap-2">
                 <Filter size={16} />

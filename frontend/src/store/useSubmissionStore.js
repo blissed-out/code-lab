@@ -7,6 +7,7 @@ export const useSubmissionStore = create((set, get) => ({
   latestSubmissionForProblem: null,
   allSubmissionsOfUser: [],
   submissionCount: null,
+  solvedSubmissionsCount: null,
 
   loading: {
     submitCode: false,
@@ -93,6 +94,7 @@ export const useSubmissionStore = create((set, get) => ({
       );
 
       set({ allSubmissionsForProblem: res.data.data });
+      console.log("allSubmissionsForProblem", res.data.data);
     } catch (error) {
       console.error("Error getting submissions for problem", error);
 
@@ -117,6 +119,19 @@ export const useSubmissionStore = create((set, get) => ({
     } catch (error) {
       console.error("Error getting submission count for problem", error);
       toast.error("Error getting submission count for problem");
+    }
+  },
+
+  getSolvedSubmissions: async (problemId) => {
+    try {
+      const res = await axiosInstance.get(
+        `/submission/get-solved-submissions/${problemId}`,
+      );
+      console.log("solved submissions data: ", res.data.data);
+      set({ solvedSubmissionsCount: res.data.data.length });
+    } catch (error) {
+      console.error("Error getting submission success rate", error);
+      toast.error("Error getting submission success rate");
     }
   },
 }));

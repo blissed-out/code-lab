@@ -5,6 +5,42 @@ import { useAuthStore } from "../store/useAuthStore";
 import ProfileSubmission from "../components/ProfileSubmission";
 import ProblemSolvedByUser from "../components/ProblemSolvedByUser";
 import PlaylistProfile from "../components/PlaylistProfile";
+import {
+  Radar,
+  RadarChart,
+  PolarGrid,
+  PolarAngleAxis,
+  PolarRadiusAxis,
+  ResponsiveContainer,
+} from "recharts";
+
+const data = [
+  { subject: "Google", A: 120, B: 110, fullMark: 150 },
+  { subject: "Microsoft", A: 98, B: 130, fullMark: 150 },
+  { subject: "ChaiCode", A: 86, B: 130, fullMark: 150 },
+  { subject: "Meta", A: 99, B: 100, fullMark: 150 },
+  { subject: "Apple", A: 85, B: 90, fullMark: 150 },
+  { subject: "Amazon", A: 65, B: 85, fullMark: 150 },
+];
+
+const profileGraph = (
+  <div className="w-full h-96 p-4">
+    <ResponsiveContainer width="100%" height="100%">
+      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
+        <PolarGrid />
+        <PolarAngleAxis dataKey="subject" />
+        <PolarRadiusAxis />
+        <Radar
+          name="Mike"
+          dataKey="A"
+          stroke="#8884d8"
+          fill="#8884d8"
+          fillOpacity={0.6}
+        />
+      </RadarChart>
+    </ResponsiveContainer>
+  </div>
+);
 
 const Profile = () => {
   const { authUser } = useAuthStore();
@@ -48,74 +84,80 @@ const Profile = () => {
 
               {/* Name and Role Badge */}
               <div className="text-center md:text-left">
-                <h2 className="text-2xl font-bold">{authUser.name}</h2>
-                <div className="badge badge-primary mt-2">{authUser.role}</div>
-              </div>
-            </div>
-
-            <div className="divider"></div>
-
-            {/* User Information */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Email */}
-              <div className="stat bg-base-200 rounded-box">
-                <div className="stat-figure text-primary">
-                  <Mail className="w-8 h-8" />
+                <div className="flex items-center gap-4">
+                  <h2 className="text-2xl font-bold">{authUser.name}</h2>
+                  <div className="text-xs font-medium badge badge-sm badge-primary">
+                    {authUser.role}
+                  </div>
                 </div>
-                <div className="stat-title">Email</div>
-                <div className="stat-value text-lg break-all">
+                <div className="text-[14px] text-gray-500">
                   {authUser.email}
                 </div>
               </div>
 
-              {/* User ID */}
-              {/*  <div className="stat bg-base-200 rounded-box"> */}
-              {/*    <div className="stat-figure text-primary"> */}
-              {/*     <User className="w-8 h-8" /> */}
-              {/*   </div> */}
-              {/*   <div className="stat-title">User ID</div> */}
-              {/*   <div className="stat-value text-sm break-all"> */}
-              {/*     {authUser.id} */}
-              {/*   </div> */}
-              {/* </div> */}
-
-              {/* Role Status */}
-              <div className="stat bg-base-200 rounded-box">
-                <div className="stat-figure text-primary">
-                  <Shield className="w-8 h-8" />
-                </div>
-                <div className="stat-title">Role</div>
-                <div className="stat-value text-lg">{authUser.role}</div>
-                <div className="stat-desc">
-                  {authUser.role === "ADMIN"
-                    ? "Full system access"
-                    : "Limited access"}
-                </div>
-              </div>
-
-              {/* Profile Image Status */}
-              <div className="stat bg-base-200 rounded-box">
-                <div className="stat-figure text-primary">
-                  <Image className="w-8 h-8" />
-                </div>
-                <div className="stat-title">Profile Image</div>
-                <div className="stat-value text-lg">
-                  {authUser.image ? "Uploaded" : "Not Set"}
-                </div>
-                <div className="stat-desc">
-                  {authUser.image
-                    ? "Image available"
-                    : "Upload a profile picture"}
-                </div>
-              </div>
+              {/* profile graph */}
+              {profileGraph}
             </div>
+            <div className="divider"></div>
+            {/* github style map */}
 
+            {/* User Information */}
+            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
+            {/* Email */}
+            {/* <div className="stat bg-base-200 rounded-box"> */}
+            {/*   <div className="stat-figure text-primary"> */}
+            {/*     <Mail className="w-8 h-8" /> */}
+            {/*   </div> */}
+            {/*   <div className="stat-title">Email</div> */}
+            {/*   <div className="stat-value text-lg break-all"> */}
+            {/*     {authUser.email} */}
+            {/*   </div> */}
+            {/* </div> */}
+            {/* User ID */}
+            {/*  <div className="stat bg-base-200 rounded-box"> */}
+            {/*    <div className="stat-figure text-primary"> */}
+            {/*     <User className="w-8 h-8" /> */}
+            {/*   </div> */}
+            {/*   <div className="stat-title">User ID</div> */}
+            {/*   <div className="stat-value text-sm break-all"> */}
+            {/*     {authUser.id} */}
+            {/*   </div> */}
+            {/* </div> */}
+            {/* Role Status */}
+            {/* <div className="stat bg-base-200 rounded-box"> */}
+            {/*   <div className="stat-figure text-primary"> */}
+            {/*     <Shield className="w-8 h-8" /> */}
+            {/*   </div> */}
+            {/*   <div className="stat-title">Role</div> */}
+            {/*   <div className="stat-value text-lg">{authUser.role}</div> */}
+            {/*   <div className="stat-desc"> */}
+            {/*     {authUser.role === "ADMIN" */}
+            {/*       ? "Full system access" */}
+            {/*       : "Limited access"} */}
+            {/*   </div> */}
+            {/* </div> */}
+            {/* Profile Image Status */}
+            {/* <div className="stat bg-base-200 rounded-box"> */}
+            {/*   <div className="stat-figure text-primary"> */}
+            {/*     <Image className="w-8 h-8" /> */}
+            {/*   </div> */}
+            {/*   <div className="stat-title">Profile Image</div> */}
+            {/*   <div className="stat-value text-lg"> */}
+            {/*     {authUser.image ? "Uploaded" : "Not Set"} */}
+            {/*   </div> */}
+            {/*   <div className="stat-desc"> */}
+            {/*     {authUser.image */}
+            {/*       ? "Image available" */}
+            {/*       : "Upload a profile picture"} */}
+            {/*   </div> */}
+            {/* </div> */}
+            {/* </div> */}
             {/* Action Buttons */}
             {/* <div className="card-actions justify-end mt-6"> */}
-            {/*   <button className="btn btn-outline btn-primary"> */}
-            {/*     Edit Profile */}
-            {/*   </button> */}
-            {/*   <button className="btn btn-primary">Change Password</button> */}
+            {/* <button className="btn btn-outline btn-primary"> */}
+            {/*   Edit Profile */}
+            {/* </button> */}
+            {/* <button className="btn btn-primary">Change Password</button> */}
             {/* </div> */}
           </div>
         </div>
