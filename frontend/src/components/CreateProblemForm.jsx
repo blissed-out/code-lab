@@ -117,59 +117,15 @@ const sampledpData = {
 function climbStairs(n) {
     // Write your code here
 }
-
-// Parse input and execute
-const readline = require('readline');
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-});
-
-rl.on('line', (line) => {
-    const n = parseInt(line.trim());
-    const result = climbStairs(n);
-
-    console.log(result);
-    rl.close();
-});`,
+;`,
     PYTHON: `class Solution:
     def climbStairs(self, n: int) -> int:
         # Write your code here
         pass
-
-# Input parsing
-if __name__ == "__main__":
-    import sys
-    
-    # Parse input
-    n = int(sys.stdin.readline().strip())
-    
-    # Solve
-    sol = Solution()
-    result = sol.climbStairs(n)
-    
-    # Print result
-    print(result)`,
-    JAVA: `import java.util.Scanner;
-
-class Main {
-    public int climbStairs(int n) {
+`,
+    JAVA: `public int climbStairs(int n) {
         // Write your code here
         return 0;
-    }
-  
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = Integer.parseInt(scanner.nextLine().trim());
-        
-        // Use Main class instead of Solution
-        Main main = new Main();
-        int result = main.climbStairs(n);
-        
-        System.out.println(result);
-        scanner.close();
-    }
 }`,
   },
   referenceSolutions: {
@@ -207,22 +163,7 @@ for (let i = 3; i <= n; i++) {
 return n === 1 ? a : b;
 */
 }
-
-// Parse input and execute
-const readline = require('readline');
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-});
-
-rl.on('line', (line) => {
-    const n = parseInt(line.trim());
-    const result = climbStairs(n);
-
-    console.log(result);
-    rl.close();
-});`,
+`,
     PYTHON: `class Solution:
     def climbStairs(self, n: int) -> int:
         # Base cases
@@ -246,24 +187,8 @@ rl.on('line', (line) => {
         #     a, b = b, a + b
         # 
         # return a if n == 1 else b
-
-# Input parsing
-if __name__ == "__main__":
-    import sys
-    
-    # Parse input
-    n = int(sys.stdin.readline().strip())
-    
-    # Solve
-    sol = Solution()
-    result = sol.climbStairs(n)
-    
-    # Print result
-    print(result)`,
-    JAVA: `import java.util.Scanner;
-
-class Main {
-    public int climbStairs(int n) {
+`,
+    JAVA: `public int climbStairs(int n) {
         // Base cases
         if (n <= 2) {
             return n;
@@ -294,18 +219,7 @@ class Main {
         */
     }
   
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        int n = Integer.parseInt(scanner.nextLine().trim());
-        
-        // Use Main class instead of Solution
-        Main main = new Main();
-        int result = main.climbStairs(n);
-        
-        System.out.println(result);
-        scanner.close();
-    }
-}`,
+`,
   },
 };
 
@@ -362,59 +276,15 @@ function isPalindrome(s) {
     // Write your code here
 }
   
-// Add readline for dynamic input handling
-const readline = require('readline');
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-});
-
-// Process input line
-rl.on('line', (line) => {
-    // Call solution with the input string
-    const result = isPalindrome(line);
-    
-    // Output the result
-    console.log(result ? "true" : "false");
-    rl.close();
-});`,
+`,
     PYTHON: `class Solution:
-def isPalindrome(self, s: str) -> bool:
-    # Write your code here
-    pass
+    def isPalindrome(self, s: str) -> bool:
+        # Write your code here
+        pass
   
-# Input parsing
-if __name__ == "__main__":
-    import sys
-    # Read the input string
-    s = sys.stdin.readline().strip()
-    
-    # Call solution
-    sol = Solution()
-    result = sol.isPalindrome(s)
-    
-    # Output result
-    print(str(result).lower())  # Convert True/False to lowercase true/false`,
-    JAVA: `
-import java.util.Scanner;
-
-public class Main {
-    public static String preprocess(String s) {
-        return s.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-    }
-
-    public static boolean isPalindrome(String s) {
-       
-    }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-
-        boolean result = isPalindrome(input);
-        System.out.println(result ? "true" : "false");
-    }
+`,
+    JAVA: `public static boolean isPalindrome(String s) {
+  // Write your code here
 }
 `,
   },
@@ -442,23 +312,7 @@ function isPalindrome(s) {
     return true;
 }
   
-// Add readline for dynamic input handling
-const readline = require('readline');
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    terminal: false
-});
-  
-// Process input line
-rl.on('line', (line) => {
-    // Call solution with the input string
-    const result = isPalindrome(line);
-
-    // Output the result
-    console.log(result ? "true" : "false");
-    rl.close();
-});`,
+`,
     PYTHON: `class Solution:
     def isPalindrome(self, s: str) -> bool:
         # Convert to lowercase and keep only alphanumeric characters
@@ -467,26 +321,8 @@ rl.on('line', (line) => {
         # Check if it's a palindrome
         return filtered_chars == filtered_chars[::-1]
   
-# Input parsing
-if __name__ == "__main__":
-    import sys
-    # Read the input string
-    s = sys.stdin.readline().strip()
-      
-    # Call solution
-    sol = Solution()
-    result = sol.isPalindrome(s)
-      
-    # Output result
-    print(str(result).lower())  # Convert True/False to lowercase true/false`,
-    JAVA: `import java.util.Scanner;
-
-public class Main {
-    public static String preprocess(String s) {
-        return s.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-    }
-
-    public static boolean isPalindrome(String s) {
+`,
+    JAVA: `public static boolean isPalindrome(String s) {
         s = preprocess(s);
         int left = 0, right = s.length() - 1;
 
@@ -498,15 +334,6 @@ public class Main {
 
         return true;
     }
-
-    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-
-        boolean result = isPalindrome(input);
-        System.out.println(result ? "true" : "false");
-    }
-}
 `,
   },
 };
