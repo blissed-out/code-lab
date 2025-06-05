@@ -225,3 +225,23 @@ export const getAllTheSubmissionsForProblem = asyncHandler(async (req, res) => {
       new ApiResponse(200, submissionCount, "submissions fetched succsfully"),
     );
 });
+
+export const getAllTheSolvedProblemForProblem = asyncHandler(
+  async (req, res) => {
+    const { problemId } = req.params;
+
+    const solvedProblems = await db.problemSolved.findMany({
+      where: { problemId: problemId },
+    });
+
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          solvedProblems,
+          "solved problems fetched successfully",
+        ),
+      );
+  },
+);
