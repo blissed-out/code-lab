@@ -2,6 +2,7 @@ import { Router } from "express";
 import { isLoggedIn } from "../middlewares/login.middleware.js";
 import {
   getAllSubmission,
+  getAllTheSolvedProblemForProblem,
   getAllTheSubmissionsForProblem,
   getSubmissionsForProblem,
   submitCode,
@@ -23,6 +24,12 @@ submissionRoute.get(
   "/get-submissions-count/:problemId",
   isLoggedIn,
   getAllTheSubmissionsForProblem,
+);
+
+submissionRoute.get(
+  "/get-solved-submissions/:problemId",
+  isLoggedIn,
+  getAllTheSolvedProblemForProblem,
 );
 
 export default submissionRoute;
