@@ -66,11 +66,11 @@ const ProblemPage = () => {
       setCode(
         allSubmissionsForProblem[allSubmissionsForProblem.length - 1]
           ?.sourceCode ||
-          problem.codeSnippets?.[selectedLanguage] ||
+          problem?.codeSnippets?.[selectedLanguage] ||
           "",
       );
       setTestCases(
-        problem.testcases?.map((tc) => ({
+        problem?.testcases?.map((tc) => ({
           input: tc.input,
           output: tc.output,
         })) || [],
