@@ -14,12 +14,19 @@ export const getJudge0LangagueId = (language) => {
 
 export const submitBatch = async (submissions) => {
   // to transform the submissions to the format required by Judge0 API
-  let functionDeclared;
+  //
+
   if (submissions[0].language_id == 62) {
-    functionDeclared = submissions[0].source_code.match(
-      /\b(?:public|private|protected)?\s*(?:static\s+)?\w+\s+(\w+)\s*\(/,
+    const { data } = await axios.post(
+      `http://${process.env.JUDGE0_API}/submissions/batch?base64_encoded=false`,
+      { submissions },
     );
-  } else if (submissions[0].language_id == 63) {
+
+    return data;
+  }
+
+  let functionDeclared;
+  if (submissions[0].language_id == 63) {
     functionDeclared = submissions[0].source_code.match(
       /function\s+(\w+)\s*\(/,
     );
@@ -28,10 +35,9 @@ export const submitBatch = async (submissions) => {
   }
 
   const extractedFunction = functionDeclared[1];
-
   console.log("this is extracted function: ", extractedFunction);
 
-  const judge0Input = {
+  const judge0InputForInteger = {
     63: `// Add readline for dynamic input handling
    const readline = require('readline');
    const rl = readline.createInterface({
@@ -42,58 +48,110 @@ export const submitBatch = async (submissions) => {
 
    // Process input line
   rl.on('line', (line) => {
+  const args = line.split(' ').map(Number);
+
    // Call solution with the input string
-   const result = ${extractedFunction}(line);
+   const result = ${extractedFunction}(...args);
 
    // Output the result
-   console.log(result ? "true" : "false");
+   console.log(result);
    rl.close();
   });`,
 
-    71: `# Input parsing
+    71: `\n#Input parsing
+if __name__ == "__main__":
+    import sys
+
+    # Read the input string and convert to integer
+    s = sys.stdin.readline().strip() 
+    args = list(map(int, s.split()))
+
+    # Call solution
+    sol = Solution()
+    result = sol.${extractedFunction}(*args)
+
+    # Output result
+    print(str(result).lower() if isinstance(result, bool) else result)
+   `,
+  };
+
+  const judge0InputForString = {
+    63: `// Add readline for dynamic input handling
+   const readline = require('readline');
+   const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+    terminal: false
+   });
+
+   // Process input line
+  rl.on('line', (line) => {
+  const args = line.split(' ');
+
+   // Call solution with the input string
+   const result = ${extractedFunction}(...args);
+
+   // Output the result
+   console.log(result);
+   rl.close();
+  });`,
+
+    71: `\n#Input parsing
 if __name__ == "__main__":
     import sys
     # Read the input string
     s = sys.stdin.readline().strip()
-
-    # Try to convert to int if it's a number
-    if s.isdigit() or (s.startswith('-') and s[1:].isdigit()):
-        s = int(s)
+    args = s.split(" ")
 
     # Call solution
     sol = Solution()
-    result = sol.${extractedFunction}(s)
+    result = sol.${extractedFunction}(*args)
 
     # Output result
-    print(str(result).lower())  # Convert True/False to lowercase true/false
+    print(str(result).lower() if isinstance(result, bool) else result)
    `,
-
-    62: [
-      `import java.util.Scanner;
-     public class Main {
-    public static String preprocess(String s) {
-        return s.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-    }`,
-      `    public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        String input = sc.nextLine();
-
-        boolean result = ${extractedFunction}(input);
-        System.out.println(result ? "true" : "false");
-    }
-     }`,
-    ],
   };
+  // print(str(result).lower() if isinstance(result, bool) else result)
+  // print(str(result).lower() if result == "True" or result == "False" else result) # change True/False to lowercase true/false
+
+  // check input type
+
+  console.log("this is submission stdin: ", submissions[0].stdin);
+  let parsedInput;
+  let inputType;
+
+  try {
+    parsedInput = JSON.parse(submissions[0].stdin.split(" ")[0]);
+    console.log("try block");
+    inputType = typeof parsedInput;
+  } catch (error) {
+    console.log("catch block");
+    inputType = "string";
+  }
+
+  let judge0Input;
+
+  if (inputType == "number") {
+    judge0Input = judge0InputForInteger;
+  } else {
+    judge0Input = judge0InputForString;
+  }
+
+  console.log("this is input type:", inputType);
+  console.log("judge0 for python: ", judge0Input[71][0], judge0Input[71][1]);
 
   const finalSubmissions = submissions.map((submission) => ({
-    // source_code: finalSourceCode,
     source_code:
       submission.language_id == 62
-        ? judge0Input[62][0] + submission.source_code + judge0Input[62][1]
-        : submission.source_code + judge0Input[submission.language_id],
+        ? source_code
+        : submission.language_id == 71
+          ? submission.source_code + judge0Input[71]
+          : submission.source_code + judge0Input[63],
     language_id: submission.language_id,
     stdin: submission.stdin,
   }));
+
+  console.log("this is final submissions: ", finalSubmissions);
 
   const { data } = await axios.post(
     `http://${process.env.JUDGE0_API}/submissions/batch?base64_encoded=false`,
