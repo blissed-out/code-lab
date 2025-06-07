@@ -25,4 +25,9 @@ export const useExecutionStore = create((set) => ({
       set({ isExecuting: false });
     }
   },
+  clearExecutionResult: async () =>
+    set({
+      isExecuting: false,
+      execution: null,
+    }),
 }));
