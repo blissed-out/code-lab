@@ -3,6 +3,7 @@ import { User, Code, LogOut } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import { Link } from "react-router-dom";
 import LogoutButton from "./LogoutButton";
+import ThemeToggle from "../components/ThemeToggle";
 
 const Navbar = () => {
   const { authUser } = useAuthStore();
@@ -13,11 +14,11 @@ const Navbar = () => {
         {/* Logo Section */}
         <Link to="/" className="flex items-center gap-3 cursor-pointer">
           <img
-            src="/vite.svg"
+            src="../../public/zencode.png"
             className="h-18 w-18 bg-primary/20 text-primary border-none px-2 py-2 rounded-full"
           />
-          <span className="text-lg md:text-2xl font-bold tracking-tight text-white hidden md:block">
-            CodeLab
+          <span className="text-lg md:text-2xl font-bold tracking-tight text-primary hidden md:block">
+            CodeZen
           </span>
         </Link>
 
@@ -32,7 +33,7 @@ const Navbar = () => {
                 <img
                   src={
                     authUser?.image ||
-                    "https://avatar.iran.liara.run/public/boy"
+                    `https://i.pravatar.cc/150?u=${authUser?.id}`
                   }
                   alt="User Avatar"
                   className="object-cover"
@@ -78,6 +79,7 @@ const Navbar = () => {
               </li>
             </ul>
           </div>
+          <ThemeToggle />
         </div>
       </div>
     </nav>
