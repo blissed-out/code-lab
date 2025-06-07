@@ -10,6 +10,7 @@ import { Loader } from "lucide-react";
 import Layout from "./layout/Layout";
 import AdminRoute from "./components/AdminRoute";
 import AddProblem from "./page/AddProblem";
+import EditProblem from "./page/EditProblem";
 import ProblemPage from "./page/ProblemPage";
 import Profile from "./page/ProfilePage";
 
@@ -29,7 +30,8 @@ const App = () => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-start ">
+    <div className="relative flex flex-col items-center justify-start ">
+      <div className="absolute top-8 right-8 z-50"></div>
       <Toaster />
       <Routes>
         <Route path="/" element={<Layout />}>
@@ -59,6 +61,10 @@ const App = () => {
             path="/add-problem"
             element={authUser ? <AddProblem /> : <Navigate to="/" />}
           />
+          {/* <Route */}
+          {/*   path="/update-problem/:id" */}
+          {/*   element={authUser ? <EditProblem /> : <Navigate to="/" />} */}
+          {/* /> */}
         </Route>
 
         <Route
