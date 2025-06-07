@@ -1,49 +1,58 @@
-import React from "react";
+import { React, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Mail, User, Shield, Image } from "lucide-react";
+import { ArrowLeft, Swords, Hourglass } from "lucide-react";
 import { useAuthStore } from "../store/useAuthStore";
 import ProfileSubmission from "../components/ProfileSubmission";
 import ProblemSolvedByUser from "../components/ProblemSolvedByUser";
 import PlaylistProfile from "../components/PlaylistProfile";
-import {
-  Radar,
-  RadarChart,
-  PolarGrid,
-  PolarAngleAxis,
-  PolarRadiusAxis,
-  ResponsiveContainer,
-} from "recharts";
-
-const data = [
-  { subject: "Google", A: 120, B: 110, fullMark: 150 },
-  { subject: "Microsoft", A: 98, B: 130, fullMark: 150 },
-  { subject: "ChaiCode", A: 86, B: 130, fullMark: 150 },
-  { subject: "Meta", A: 99, B: 100, fullMark: 150 },
-  { subject: "Apple", A: 85, B: 90, fullMark: 150 },
-  { subject: "Amazon", A: 65, B: 85, fullMark: 150 },
-];
-
-const profileGraph = (
-  <div className="w-full h-96 p-4">
-    <ResponsiveContainer width="100%" height="100%">
-      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data}>
-        <PolarGrid />
-        <PolarAngleAxis dataKey="subject" />
-        <PolarRadiusAxis />
-        <Radar
-          name="Mike"
-          dataKey="A"
-          stroke="#8884d8"
-          fill="#8884d8"
-          fillOpacity={0.6}
-        />
-      </RadarChart>
-    </ResponsiveContainer>
-  </div>
-);
+import { useSubmissionStore } from "../store/useSubmissionStore";
 
 const Profile = () => {
   const { authUser } = useAuthStore();
+  const { allSubmissionsOfUser, getAllSubmissions } = useSubmissionStore();
+
+  // time tracking
+  const today = new Date();
+  const format = (date) => date.toISOString().split("T")[0];
+
+  const todayKey = `track-${format(today)}`;
+
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  const yesterdayKey = `track-${format(yesterday)}`;
+
+  const todayMinutes = parseInt(localStorage.getItem(todayKey) || "0", 10);
+  const yesterdayMinutes = parseInt(
+    localStorage.getItem(yesterdayKey) || "0",
+    10,
+  );
+
+  console.log("today minutes", todayMinutes);
+  console.log("yesterday minutes", yesterdayMinutes);
+
+  // TODO: server side tracking of time spent
+  const percent =
+    yesterdayMinutes === 0
+      ? todayMinutes > 0
+        ? 100
+        : 0
+      : (todayMinutes / yesterdayMinutes) * 100;
+
+  const timePercent = Math.round(percent);
+
+  console.log("this is the time percent", timePercent);
+
+  useEffect(() => {
+    getAllSubmissions();
+  }, [getAllSubmissions]);
+
+  const acceptedSubmission = allSubmissionsOfUser.filter(
+    (s) => s.status === "Accepted",
+  );
+
+  const successRateOfUser = allSubmissionsOfUser.length
+    ? (acceptedSubmission.length / allSubmissionsOfUser.length) * 100
+    : 0;
 
   return (
     <div className="min-h-screen bg-base-200 flex flex-col items-center justify-center py-10 px-4 md:px-8 w-full">
@@ -61,116 +70,62 @@ const Profile = () => {
         {/* Profile Card */}
         <div className="card bg-base-100 shadow-xl">
           <div className="card-body">
-            {/* Profile Header */}
-            <div className="flex flex-col md:flex-row items-center gap-6">
-              {/* Avatar */}
-              <div className="avatar placeholder">
-                <div className="bg-neutral text-neutral-content rounded-full w-24 h-24 ring ring-primary ring-offset-base-100 ring-offset-2">
-                  {authUser.image ? (
-                    <img
-                      src={
-                        authUser?.image ||
-                        "https://avatar.iran.liara.run/public/boy"
-                      }
-                      alt={authUser.name}
-                    />
-                  ) : (
-                    <span className="text-3xl">
-                      {authUser.name ? authUser.name.charAt(0) : "U"}
-                    </span>
-                  )}
+            <div className="stats stats-shadow stats-vertical md:stats-horizontal w-full justify-center">
+              <div className="stat">
+                <div className="stat-figure content-primary">
+                  <Hourglass className="h-8 w-8" />
+                </div>
+                <div className="stat-title">Time Spent</div>
+                <div className="stat-value content-primary">
+                  {todayMinutes} min
+                </div>
+                <div className="stat-desc">
+                  {timePercent}% more than yesterday
                 </div>
               </div>
-
-              {/* Name and Role Badge */}
-              <div className="text-center md:text-left">
-                <div className="flex items-center gap-4">
-                  <h2 className="text-2xl font-bold">{authUser.name}</h2>
-                  <div className="text-xs font-medium badge badge-sm badge-primary">
-                    {authUser.role}
+              <div className="stat">
+                <div className="stat-figure content-secondary">
+                  <Swords className="h-8 w-8" />
+                </div>
+                <div className="stat-title">Challenge Taken</div>
+                <div className="stat-value content-secondary">
+                  {allSubmissionsOfUser.length}
+                </div>
+                {/* TODO: fetch problems solved by user in last month */}
+                <div className="stat-desc">100% more than last month</div>
+              </div>
+              <div className="stat">
+                <div className="stat-figure content-secondary flex flex-col items-center">
+                  <div className="avatar ">
+                    <div className="w-16 rounded-full">
+                      <img
+                        src={`https://i.pravatar.cc/150?u=${authUser?.id}`}
+                      />
+                    </div>
                   </div>
+                  {/* <div>{authUser.name}</div> */}
                 </div>
-                <div className="text-[14px] text-gray-500">
-                  {authUser.email}
+                <div className="stat-title">Success Rate</div>
+                <div className="stat-value">{successRateOfUser}%</div>
+                <div className="stat-desc ">
+                  {acceptedSubmission.length} Successful Attempts
                 </div>
               </div>
-
-              {/* profile graph */}
-              {profileGraph}
             </div>
-            <div className="divider"></div>
-            {/* github style map */}
-
-            {/* User Information */}
-            {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6"> */}
-            {/* Email */}
-            {/* <div className="stat bg-base-200 rounded-box"> */}
-            {/*   <div className="stat-figure text-primary"> */}
-            {/*     <Mail className="w-8 h-8" /> */}
-            {/*   </div> */}
-            {/*   <div className="stat-title">Email</div> */}
-            {/*   <div className="stat-value text-lg break-all"> */}
-            {/*     {authUser.email} */}
-            {/*   </div> */}
-            {/* </div> */}
-            {/* User ID */}
-            {/*  <div className="stat bg-base-200 rounded-box"> */}
-            {/*    <div className="stat-figure text-primary"> */}
-            {/*     <User className="w-8 h-8" /> */}
-            {/*   </div> */}
-            {/*   <div className="stat-title">User ID</div> */}
-            {/*   <div className="stat-value text-sm break-all"> */}
-            {/*     {authUser.id} */}
-            {/*   </div> */}
-            {/* </div> */}
-            {/* Role Status */}
-            {/* <div className="stat bg-base-200 rounded-box"> */}
-            {/*   <div className="stat-figure text-primary"> */}
-            {/*     <Shield className="w-8 h-8" /> */}
-            {/*   </div> */}
-            {/*   <div className="stat-title">Role</div> */}
-            {/*   <div className="stat-value text-lg">{authUser.role}</div> */}
-            {/*   <div className="stat-desc"> */}
-            {/*     {authUser.role === "ADMIN" */}
-            {/*       ? "Full system access" */}
-            {/*       : "Limited access"} */}
-            {/*   </div> */}
-            {/* </div> */}
-            {/* Profile Image Status */}
-            {/* <div className="stat bg-base-200 rounded-box"> */}
-            {/*   <div className="stat-figure text-primary"> */}
-            {/*     <Image className="w-8 h-8" /> */}
-            {/*   </div> */}
-            {/*   <div className="stat-title">Profile Image</div> */}
-            {/*   <div className="stat-value text-lg"> */}
-            {/*     {authUser.image ? "Uploaded" : "Not Set"} */}
-            {/*   </div> */}
-            {/*   <div className="stat-desc"> */}
-            {/*     {authUser.image */}
-            {/*       ? "Image available" */}
-            {/*       : "Upload a profile picture"} */}
-            {/*   </div> */}
-            {/* </div> */}
-            {/* </div> */}
-            {/* Action Buttons */}
-            {/* <div className="card-actions justify-end mt-6"> */}
-            {/* <button className="btn btn-outline btn-primary"> */}
-            {/*   Edit Profile */}
-            {/* </button> */}
-            {/* <button className="btn btn-primary">Change Password</button> */}
-            {/* </div> */}
+            {/* TODO: graph implementation here  */}
+            {/* <div className="divider"></div> */}
           </div>
         </div>
+        <div>
+          <ProfileSubmission />
+
+          <ProblemSolvedByUser />
+
+          <PlaylistProfile />
+        </div>
+
+        {/* PLaylist created by the user and their actions */}
       </div>
-      <div>
-        <ProfileSubmission />
-
-        <ProblemSolvedByUser />
-
-        <PlaylistProfile />
-      </div>
-
-      {/* PLaylist created by the user and their actions */}
     </div>
   );
 };

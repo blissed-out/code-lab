@@ -24,6 +24,8 @@ import { useSubmissionStore } from "../store/useSubmissionStore";
 import Submission from "../components/Submission";
 import Execution from "../components/Execution";
 import SubmissionsList from "../components/SubmissionList";
+import ThemeToggle from "../components/ThemeToggle";
+import TimeTracker from "../components/timeTracking";
 
 const ProblemPage = () => {
   const { id } = useParams();
@@ -44,11 +46,32 @@ const ProblemPage = () => {
 
   const [code, setCode] = useState("");
   const [activeTab, setActiveTab] = useState("description");
+  console.log(
+    "this is language with last submission",
+    allSubmissionsForProblem[
+      allSubmissionsForProblem.length - 1
+    ]?.language?.toUpperCase(),
+  );
+
   const [selectedLanguage, setSelectedLanguage] = useState("JAVASCRIPT");
+
+  useEffect(() => {
+    if (allSubmissionsForProblem.length > 0) {
+      setSelectedLanguage(
+        allSubmissionsForProblem[
+          allSubmissionsForProblem.length - 1
+        ].language.toUpperCase(),
+      );
+    }
+  }, [allSubmissionsForProblem]);
+
+  console.log("selectedLanguage", selectedLanguage);
+
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [testcases, setTestCases] = useState([]);
 
-  const { runCode, execution, isExecuting } = useExecutionStore();
+  const { runCode, execution, isExecuting, clearExecutionResult } =
+    useExecutionStore();
 
   useEffect(() => {
     getSolvedSubmissions(id);
@@ -58,7 +81,7 @@ const ProblemPage = () => {
   useEffect(() => {
     getProblemById(id);
     getSubmissionCountForProblem(id);
-    console.log("allSubmissionsForProblem", allSubmissionsForProblem);
+    clearExecutionResult();
   }, [id]);
 
   useEffect(() => {
@@ -76,7 +99,7 @@ const ProblemPage = () => {
         })) || [],
       );
     }
-  }, [problem, selectedLanguage]);
+  }, [problem]);
 
   useEffect(() => {
     if (activeTab === "submissions" && id) {
@@ -87,7 +110,16 @@ const ProblemPage = () => {
   const handleLanguageChange = (e) => {
     const lang = e.target.value;
     setSelectedLanguage(lang);
-    setCode(problem.codeSnippets?.[lang] || "");
+    console.log("selectedLanguage changed to: ", lang);
+
+    const lastSubmission =
+      allSubmissionsForProblem[allSubmissionsForProblem.length - 1];
+
+    setCode(
+      lang === lastSubmission?.language?.toUpperCase()
+        ? lastSubmission?.sourceCode
+        : problem?.codeSnippets?.[lang] || "",
+    );
   };
 
   const handleSubmitCode = (e) => {
@@ -222,7 +254,9 @@ const ProblemPage = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-base-300 to-base-200 max-w-7xl w-full">
-      <nav className="navbar bg-base-100 shadow-lg px-4">
+      <TimeTracker />
+
+      <nav className="navbar bg-base-100 shadow-lg px-4 gap-8">
         <div className="flex-1 gap-2">
           <Link to={"/"} className="flex items-center gap-2 text-primary">
             <Home className="w-6 h-6" />
@@ -278,6 +312,7 @@ const ProblemPage = () => {
             ))}
           </select>
         </div>
+        <ThemeToggle />
       </nav>
 
       <div className="container mx-auto p-4">
