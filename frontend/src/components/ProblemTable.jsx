@@ -188,9 +188,14 @@ const ProblemsTable = ({ problems }) => {
                             >
                               <TrashIcon className="w-4 h-4 text-white" />
                             </button>
-                            <button disabled className="btn btn-sm btn-warning">
-                              <PencilIcon className="w-4 h-4 text-white" />
-                            </button>
+                            {/* TODO: update problem ui */}
+                            {/* <button className="btn btn-sm btn-warning"> */}
+                            {/*   onClick= */}
+                            {/*   {() => { */}
+                            {/*     navigate(`/update-problem/${problem.id}`); */}
+                            {/*   }} */}
+                            {/*   <PencilIcon className="w-4 h-4 text-white" /> */}
+                            {/* </button> */}
                           </div>
                         )}
                         <button
