@@ -120,7 +120,7 @@ const ProblemSolvedByUser = () => {
                   Total problems solved:{" "}
                   <span className="font-bold">{solvedProblems.length}</span>
                 </span>
-                <Link to="/problems" className="btn btn-sm btn-primary">
+                <Link to="/" className="btn btn-sm btn-primary">
                   Solve more problems
                 </Link>
               </div>
