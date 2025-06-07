@@ -1,2 +1,95 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui" {
+  themes:
+    zenlight --default,
+    zendark --prefersdark;
+}
+/* @plugin "daisyui/theme" { */
+/*   name: "forest"; */
+/*   default: false; */
+/*   --radius-selector: 0.25rem; */
+/*   --radius-field: 0.25rem; */
+/*   --radius-box: 0.25rem; */
+/* } */
+
+@plugin "daisyui/theme" {
+  name: "retro-dark";
+  default: false;
+  prefersdark: true;
+  color-scheme: "dark";
+
+  --color-base-100: oklch(22% 0.02 95); /* Very dark muted background */
+  --color-base-200: oklch(26% 0.025 95); /* Slightly lighter */
+  --color-base-300: oklch(32% 0.03 95); /* More elevated surface */
+  --color-base-content: oklch(88% 0.015 85); /* Light cream for text */
+
+  --color-primary: oklch(73% 0.16 162.48); /* Similar tone to light mode */
+  --color-primary-content: oklch(
+    15% 0.05 180
+  ); /* Very dark teal content on bright button */
+
+  --color-secondary: oklch(85% 0.12 124.321); /* Pastel green */
+  --color-secondary-content: oklch(18% 0.06 150); /* Dark forest content */
+
+  --color-accent: oklch(75% 0.14 75.834); /* Muted peach */
+  --color-accent-content: oklch(18% 0.07 45); /* Brick red text on peach */
+
+  --color-neutral: oklch(30% 0.015 75); /* Cool muted dark */
+  --color-neutral-content: oklch(90% 0.005 60); /* Pale ivory */
+
+  --color-info: oklch(68% 0.16 241.966);
+  --color-info-content: oklch(18% 0.04 240);
+
+  --color-success: oklch(58% 0.09 186.391);
+  --color-success-content: oklch(14% 0.04 170);
+
+  --color-warning: oklch(70% 0.22 41.116);
+  --color-warning-content: oklch(15% 0.07 35);
+
+  --color-error: oklch(75% 0.18 22.216);
+  --color-error-content: oklch(12% 0.05 25);
+
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.3125rem;
+  --border: 0.5px;
+  --depth: 1;
+  --noise: 1;
+}
+
+@plugin "daisyui/theme" {
+  name: "retro";
+  default: true;
+  prefersdark: false;
+  color-scheme: "light";
+  --color-base-100: oklch(91.637% 0.034 90.515);
+  --color-base-200: oklch(88.272% 0.049 91.774);
+  --color-base-300: oklch(84.133% 0.065 90.856);
+  --color-base-content: oklch(41% 0.112 45.904);
+  --color-primary: oklch(69% 0.17 162.48);
+  --color-primary-content: oklch(39% 0.141 25.723);
+  --color-secondary: oklch(93% 0.127 124.321);
+  --color-secondary-content: oklch(44% 0.119 151.328);
+  --color-accent: oklch(68% 0.162 75.834);
+  --color-accent-content: oklch(41% 0.112 45.904);
+  --color-neutral: oklch(44% 0.011 73.639);
+  --color-neutral-content: oklch(86% 0.005 56.366);
+  --color-info: oklch(58% 0.158 241.966);
+  --color-info-content: oklch(96% 0.059 95.617);
+  --color-success: oklch(51% 0.096 186.391);
+  --color-success-content: oklch(96% 0.059 95.617);
+  --color-warning: oklch(64% 0.222 41.116);
+  --color-warning-content: oklch(96% 0.059 95.617);
+  --color-error: oklch(70% 0.191 22.216);
+  --color-error-content: oklch(40% 0.123 38.172);
+  --radius-selector: 1rem;
+  --radius-field: 1rem;
+  --radius-box: 1rem;
+  --size-selector: 0.3125rem;
+  --size-field: 0.3125rem;
+  --border: 0.5px;
+  --depth: 1;
+  --noise: 1;
+}
