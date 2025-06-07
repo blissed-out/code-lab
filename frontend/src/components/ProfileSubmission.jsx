@@ -11,6 +11,7 @@ import {
   ChevronUp,
   Filter,
 } from "lucide-react";
+import ColorfullCode from "./SyntaxHighlight"; // Assuming you have a SyntaxHighlight component
 
 const ProfileSubmission = () => {
   const { allSubmissionsOfUser, getAllSubmissions } = useSubmissionStore();
@@ -60,7 +61,7 @@ const ProfileSubmission = () => {
 
   return (
     <div className="n bg-base-200 p-4 md:p-8">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto gap-10">
         <div className="flex flex-col md:flex-row justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-primary mb-4 md:mb-0">
             My Submissions
@@ -187,8 +188,15 @@ const ProfileSubmission = () => {
                           Solution Code
                         </h3>
                         <div className="mockup-code bg-neutral text-neutral-content overflow-x-auto">
-                          <pre className="p-4">
-                            <code>{submission.sourceCode}</code>
+                          <pre className="px-4">
+                            {/* <code>{submission.sourceCode}</code> */}
+
+                            <code>
+                              <ColorfullCode
+                                language={submission.language}
+                                codeString={submission.sourceCode}
+                              />
+                            </code>
                           </pre>
                         </div>
                       </div>
@@ -201,7 +209,7 @@ const ProfileSubmission = () => {
                             Input
                           </h3>
                           <div className="mockup-code bg-neutral text-neutral-content">
-                            <pre className="p-4">
+                            <pre className="p-4 flex flex-col">
                               <code>
                                 {submission.stdin || "No input provided"}
                               </code>
@@ -215,10 +223,10 @@ const ProfileSubmission = () => {
                             Output
                           </h3>
                           <div className="mockup-code bg-neutral text-neutral-content">
-                            <pre className="p-4">
+                            <pre className="p-4 flex flex-col">
                               <code>
                                 {Array.isArray(JSON.parse(submission.stdout))
-                                  ? JSON.parse(submission.stdout).join("")
+                                  ? JSON.parse(submission.stdout).join(" ")
                                   : submission.stdout || "No output"}
                               </code>
                             </pre>
