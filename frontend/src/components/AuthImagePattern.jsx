@@ -1,5 +1,6 @@
 import { Code, Terminal, FileCode, Braces } from "lucide-react";
 import { useEffect, useState } from "react";
+import ColorfullCode from "./SyntaxHighlight";
 
 const CodeBackground = ({ title, subtitle }) => {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -65,7 +66,7 @@ function reverseList(head) {
   }, [codeSnippets.length]);
 
   return (
-    <div className="hidden lg:flex flex-col items-center justify-center bg-brown-900 text-white p-12 relative overflow-hidden">
+    <div className="hidden lg:flex flex-col items-center justify-center bg-brown-900 text-primary p-12 relative overflow-hidden">
       {/* Animated code symbols in background */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-[10%] left-[15%] animate-pulse">
@@ -103,9 +104,12 @@ function reverseList(head) {
 
           {/* Code content */}
           <div className="p-4 font-mono text-xs sm:text-sm overflow-hidden relative h-64">
-            <pre className="whitespace-pre-wrap text-green-400 transition-opacity duration-1000">
-              {codeSnippets[activeIndex]}
-            </pre>
+            {/* <pre className="whitespace-pre-wrap text-green-800 transition-opacity duration-1000"> */}
+            <ColorfullCode
+              language="javascript"
+              codeString={codeSnippets[activeIndex]}
+            />
+            {/* </pre> */}
 
             {/* Blinking cursor */}
             <div className="absolute bottom-4 right-4 w-2 h-4 bg-white animate-blink"></div>
@@ -121,7 +125,7 @@ function reverseList(head) {
 
         {/* Text content */}
         <h2 className="text-2xl font-bold mb-4 text-center">{title}</h2>
-        <p className="text-slate-300 text-center">{subtitle}</p>
+        <p className="text-brown-300 text-center">{subtitle}</p>
       </div>
     </div>
   );
